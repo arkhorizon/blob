@@ -24,28 +24,34 @@ export default function GiscusComments({ config, theme }) {
         const container = containerRef.current;
         if (!container) return;
 
-        const script = document.createElement("script");
-        script.src = "https://giscus.app/client.js";
-        script.async = true;
-        script.crossOrigin = "anonymous";
-        script.setAttribute("data-repo", config.repo);
-        script.setAttribute("data-repo-id", config.repoId);
-        script.setAttribute("data-category", config.category);
-        script.setAttribute("data-category-id", config.categoryId);
-        script.setAttribute("data-mapping", "path");
-        script.setAttribute("data-strict", "true");
-        script.setAttribute("data-reactions-enabled", "1");
-        script.setAttribute("data-emit-metadata", "0");
-        script.setAttribute("data-input-position", "top");
-        script.setAttribute("data-theme", themeUrl(GISCUS_THEMES[theme] ?? GISCUS_THEMES.oriental));
-        script.setAttribute("data-lang", "zh-CN");
-        script.setAttribute("data-loading", "lazy");
-        container.append(script);
+        const observer = new IntersectionObserver((entries) => {
+            if (!entries.some((entry) => entry.isIntersecting)) return;
+            observer.disconnect();
 
-        return () => {
-            script.remove();
-            container.replaceChildren();
-        };
+            const script = document.createElement("script");
+            script.src = "https://giscus.app/client.js";
+            script.async = true;
+            script.crossOrigin = "anonymous";
+            script.setAttribute("data-repo", config.repo);
+            script.setAttribute("data-repo-id", config.repoId);
+            script.setAttribute("data-category", config.category);
+            script.setAttribute("data-category-id", config.categoryId);
+            script.setAttribute("data-mapping", "path");
+            script.setAttribute("data-strict", "true");
+            script.setAttribute("data-reactions-enabled", "1");
+            script.setAttribute("data-emit-metadata", "0");
+            script.setAttribute("data-input-position", "top");
+            script.setAttribute("data-theme", themeUrl(GISCUS_THEMES[theme] ?? GISCUS_THEMES.oriental));
+            script.setAttribute("data-lang", "zh-CN");
+            script.setAttribute("data-loading", "lazy");
+            script.onerror = () => {
+                container.innerHTML = '<p class="giscus-error">评论加载失败，请检查网络后重试。</p>';
+            };
+            container.append(script);
+        }, { rootMargin: "400px 0px" });
+        observer.observe(container);
+
+        return () => observer.disconnect();
     }, [config, theme]);
 
     if (!config.enabled) return null;

@@ -71,7 +71,7 @@ const ogImage = image ? new URL(image, Astro.site).toString() : undefined;
       } catch {}
     </script>
   </head>
-  <body transition:animate="none">
+  <body class:list={[article ? "article-page" : "list-page"]} transition:animate="none">
     <slot />
   </body>
 </html>

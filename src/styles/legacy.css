@@ -748,6 +748,9 @@ mark.searchHL {
   grid-template-columns: 1fr;
   gap: 18px;
 }
+.article-page .listRoute {
+  display: none;
+}
 
 @media (min-width: 1025px) {
   .grid {
@@ -868,6 +871,7 @@ mark.searchHL {
 .cardImgW {
   overflow: hidden;
   position: relative;
+  background: var(--bg-s);
 }
 .cardImg {
   width: 100%;
@@ -876,8 +880,50 @@ mark.searchHL {
   display: block;
   transition: transform 0.5s ease;
 }
+.cardImg:not(.loaded) {
+  opacity: 0;
+}
+.cardImg.loaded {
+  opacity: 1;
+  transition:
+    opacity 0.25s ease,
+    transform 0.5s ease;
+}
+.cardImgW::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.16) 45%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  animation: cardImageShimmer 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+.cardImgW:has(.cardImg.loaded)::before {
+  animation: none;
+  opacity: 0;
+}
+.cardImgW:has(.cardImgPlaceholder)::before {
+  animation: none;
+  opacity: 0;
+}
+.cardImgPlaceholder {
+  opacity: 1;
+}
 .card:hover .cardImg {
   transform: scale(1.03);
+}
+@keyframes cardImageShimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 .cardImgW::after {
   content: '';
@@ -2932,6 +2978,12 @@ mark.searchHL {
 }
 .giscus-comments iframe {
   width: 100%;
+}
+.giscus-error {
+  color: var(--tx3);
+  font-family: var(--font-s);
+  font-size: 0.8rem;
+  padding: 12px 0;
 }
 
 .pagefind-source {

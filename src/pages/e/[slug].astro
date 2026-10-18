@@ -18,17 +18,18 @@ const index = await getLegacyIndex();
 const essay = index.essays[slug];
 const contentData = renderArticle(article);
 const fullText = searchDocument(article.data.title, article.data.description, contentData);
+const giscusDefaults = {
+  repo: "arkhorizon/blob-comments",
+  repoId: "R_kgDOUyVdig",
+  category: "Announcements",
+  categoryId: "DIC_kwDOUyVdis4DHVny"
+};
 const giscus = {
-  enabled: Boolean(
-    import.meta.env.PUBLIC_GISCUS_REPO &&
-      import.meta.env.PUBLIC_GISCUS_REPO_ID &&
-      import.meta.env.PUBLIC_GISCUS_CATEGORY &&
-      import.meta.env.PUBLIC_GISCUS_CATEGORY_ID
-  ),
-  repo: import.meta.env.PUBLIC_GISCUS_REPO ?? "",
-  repoId: import.meta.env.PUBLIC_GISCUS_REPO_ID ?? "",
-  category: import.meta.env.PUBLIC_GISCUS_CATEGORY ?? "",
-  categoryId: import.meta.env.PUBLIC_GISCUS_CATEGORY_ID ?? ""
+  enabled: Object.values(giscusDefaults).every(Boolean),
+  repo: import.meta.env.PUBLIC_GISCUS_REPO || giscusDefaults.repo,
+  repoId: import.meta.env.PUBLIC_GISCUS_REPO_ID || giscusDefaults.repoId,
+  category: import.meta.env.PUBLIC_GISCUS_CATEGORY || giscusDefaults.category,
+  categoryId: import.meta.env.PUBLIC_GISCUS_CATEGORY_ID || giscusDefaults.categoryId
 };
 ---
 
@@ -39,6 +40,7 @@ const giscus = {
   article
   publishedTime={article.data.date}
 >
+  <div class="listRoute articleRoute" transition:persist="essay-list" aria-hidden="true"></div>
   <ReadingApp
     client:load
     essay={essay}

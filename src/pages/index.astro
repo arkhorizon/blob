@@ -7,5 +7,7 @@ const index = await getLegacyIndex();
 ---
 
 <BaseLayout>
-  <ListApp client:load index={index} />
+  <div class="listRoute" transition:persist="essay-list">
+    <ListApp client:load index={index} />
+  </div>
 </BaseLayout>

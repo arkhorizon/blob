@@ -37,7 +37,17 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuer
           >
             <div className="cardImgW">
               {e.cover ? (
-                <img className="cardImg" src={e.cover} alt={e.title} loading="lazy" />
+                <img
+                  className="cardImg"
+                  src={e.cover}
+                  alt={e.title}
+                  loading="lazy"
+                  decoding="async"
+                  ref={(image) => {
+                    if (image?.complete && image.naturalWidth > 0) image.classList.add("loaded");
+                  }}
+                  onLoad={(event) => event.currentTarget.classList.add("loaded")}
+                />
               ) : (
                 <div className="cardImg cardImgPlaceholder" />
               )}
