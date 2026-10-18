@@ -60,6 +60,7 @@ main,
 .gsc-timeline {
   gap: 24px;
   order: 1;
+  padding-inline-start: 58px;
 }
 
 .gsc-timeline.hidden {
@@ -75,7 +76,6 @@ main,
 .gsc-comment > div {
   position: relative;
   overflow: visible;
-  padding-inline-start: 74px;
   border: 1px solid var(--color-border-default) !important;
   border-radius: 12px;
   background: var(--color-canvas-default);
@@ -94,6 +94,7 @@ main,
 .gsc-comment-author {
   min-width: 0;
   gap: 8px !important;
+  padding-inline-start: 58px;
 }
 
 .gsc-comment-author-avatar {
@@ -104,10 +105,12 @@ main,
 .gsc-comment-author-avatar img {
   position: absolute;
   top: 8px;
-  left: 16px;
+  left: -58px;
+  clip-path: inset(0);
   width: 44px !important;
   height: 44px !important;
   margin: 0 !important;
+  object-fit: cover;
   border: 1px solid var(--color-border-muted);
   border-radius: 999px !important;
   background: var(--color-canvas-subtle);
@@ -249,7 +252,7 @@ main,
 
 /* Replies remain compact and indented inside the parent card. */
 .gsc-replies {
-  margin: 0 12px 12px 44px;
+  margin: 0 12px 12px 20px;
   border: 1px solid var(--color-border-muted) !important;
   border-radius: 10px;
   background: var(--color-canvas-subtle) !important;
@@ -487,19 +490,21 @@ main,
 }
 
 @media (max-width: 480px) {
-  .gsc-comment > .w-full,
-  .gsc-comment > div {
-    padding-inline-start: 62px;
-  }
-
   .gsc-comment-author-avatar img {
-    left: 12px;
+    left: -50px;
     width: 38px !important;
     height: 38px !important;
   }
 
   .gsc-comment-header,
-  .gsc-comment-content,
+  .gsc-comment-content {
+    padding-left: 12px !important;
+  }
+
+  .gsc-comment-author {
+    padding-inline-start: 50px;
+  }
+
   .gsc-reply-content,
   .gsc-comment-box-preview {
     padding-inline: 12px !important;
