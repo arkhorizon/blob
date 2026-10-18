@@ -2,6 +2,8 @@
 title: 我对个人智能体未来的一点浅见
 description: 一点浅见：个人智能体正从聊天框走向长期陪伴，关键在于记忆、形态与信任。
 date: 2026-10-18
+updated: 2026-10-18
+author: Ark
 tags:
   - AI
   - 个人智能体
