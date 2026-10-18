@@ -96,7 +96,7 @@ npm run build
 npx wrangler pages deploy dist
 ```
 
-第一次使用 Direct Upload 时，先执行 `npx wrangler pages project create shiye-2` 创建 Pages 项目；后续直接执行部署命令即可。Wrangler 会同时上传 `functions/`。首次生产部署前初始化 D1：
+第一次使用 Direct Upload 时，先执行 `npx wrangler pages project create blob --production-branch=master` 创建 Pages 项目；后续直接执行部署命令即可。Wrangler 会同时上传 `functions/`。首次生产部署前初始化 D1：
 
 ```bash
 npx wrangler d1 execute shiye --file migrations/0001_article_views.sql --remote
