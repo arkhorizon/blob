@@ -1,0 +1,572 @@
+@import url("./shiye-light-base.css?v=base-v5");
+
+body,
+.gsc-homepage-bg {
+  --font-s: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+  --comment-shadow: 0 1px 2px rgb(15 23 42 / 5%);
+  --comment-header-bg: #f5f7fa;
+  --comment-action: #1f883d;
+  --comment-action-hover: #1a7f37;
+  background: #ffffff;
+}
+
+main {
+  --color-canvas-default: #ffffff;
+  --color-canvas-overlay: #ffffff;
+  --color-canvas-inset: #f4f6f8;
+  --color-canvas-subtle: #f8fafc;
+  --color-border-default: #dbe1e8;
+  --color-border-muted: #e7ecf1;
+  --color-fg-default: #17202a;
+  --color-fg-muted: #53606f;
+  --color-fg-subtle: #71828f;
+  --color-accent-fg: #2d3a8c;
+  --color-accent-emphasis: #2d3a8c;
+  --color-accent-muted: rgb(45 58 140 / 28%);
+  --color-accent-subtle: rgb(45 58 140 / 7%);
+}
+/* Inlined layout overrides */
+/* Shared layout overrides for current Giscus DOM. */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 0;
+  font-family: var(--font-s);
+}
+
+main,
+.gsc-main {
+  min-width: 0;
+}
+
+.gsc-main {
+  gap: 20px;
+}
+
+.gsc-reactions {
+  display: none !important;
+}
+
+.gsc-comments {
+  gap: 22px;
+}
+
+.gsc-header {
+  min-height: 32px;
+  margin: 0 !important;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--color-border-muted);
+  align-items: center;
+}
+
+.gsc-comments-count,
+.gsc-replies-count,
+.gsc-comments-count-separator {
+  margin: 0;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.gsc-comments-count-separator {
+  color: var(--color-fg-subtle);
+}
+
+.gsc-left-header em,
+.gsc-left-header .link-secondary {
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.gsc-right-header {
+  gap: 0;
+  margin: 0 !important;
+}
+
+.gsc-right-header .btn {
+  min-height: 28px;
+  border-radius: 6px;
+  border-color: var(--color-border-muted);
+  box-shadow: none;
+}
+
+.gsc-right-header .BtnGroup-item:first-child .btn {
+  border-start-end-radius: 0;
+  border-end-end-radius: 0;
+}
+
+.gsc-right-header .BtnGroup-item:last-child .btn {
+  border-inline-start: 0;
+  border-start-start-radius: 0;
+  border-end-start-radius: 0;
+}
+
+/* Top-level comments: avatar outside a unified rounded card. */
+.gsc-timeline {
+  gap: 24px;
+}
+
+.gsc-timeline.hidden {
+  display: none !important;
+}
+
+.gsc-comment {
+  padding-inline-start: 58px;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.gsc-comment > .w-full,
+.gsc-comment > div {
+  position: relative;
+  overflow: visible;
+  border: 1px solid var(--color-border-default) !important;
+  border-radius: 12px;
+  background: var(--color-canvas-default);
+  box-shadow: var(--comment-shadow);
+}
+
+.gsc-comment-header {
+  min-height: 49px;
+  padding: 10px 74px 10px 16px !important;
+  border-bottom: 1px solid var(--color-border-muted);
+  border-start-start-radius: 11px;
+  border-start-end-radius: 11px;
+  background: var(--comment-header-bg);
+}
+
+.gsc-comment-author {
+  min-width: 0;
+  gap: 8px !important;
+}
+
+.gsc-comment-author-avatar {
+  position: relative;
+  min-width: 0;
+}
+
+.gsc-comment-author-avatar img {
+  position: absolute;
+  top: -5px;
+  left: -58px;
+  width: 44px !important;
+  height: 44px !important;
+  margin: 0 !important;
+  border: 1px solid var(--color-border-muted);
+  border-radius: 999px !important;
+  background: var(--color-canvas-subtle);
+}
+
+.gsc-comment-author > span,
+.gsc-reply-author > span {
+  color: var(--color-fg-default);
+  font-weight: 650;
+}
+
+.gsc-comment-author + a,
+.gsc-reply-author + a {
+  color: var(--color-fg-muted);
+  font-size: 0.75rem;
+}
+
+.gsc-comment-edited {
+  position: absolute;
+  top: 7px;
+  inset-inline-end: 76px;
+  font-size: 0.6875rem;
+}
+
+.gsc-comment-content,
+.gsc-reply-content,
+.gsc-comment-box-preview {
+  padding: 15px 16px !important;
+  color: var(--color-fg-default);
+  font-family: var(--font-s);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.gsc-comment-content > *:first-child,
+.gsc-reply-content > *:first-child,
+.gsc-comment-box-preview > *:first-child {
+  margin-top: 0;
+}
+
+.gsc-comment-content > *:last-child,
+.gsc-reply-content > *:last-child,
+.gsc-comment-box-preview > *:last-child {
+  margin-bottom: 0;
+}
+
+.gsc-comment-content p,
+.gsc-reply-content p,
+.gsc-comment-box-preview p {
+  margin: 0 0 0.7em;
+}
+
+.gsc-comment-content a,
+.gsc-reply-content a {
+  color: var(--color-accent-fg);
+}
+
+.gsc-comment-content code,
+.gsc-reply-content code {
+  border-radius: 4px;
+}
+
+/* Move the emoji picker into the comment header. */
+.gsc-comment-footer {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  z-index: 2;
+  display: flex;
+  min-height: 34px;
+  align-items: center;
+  justify-content: flex-end;
+  background: transparent;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+.gsc-comment-reactions,
+.gsc-reply-footer .gsc-reply-reactions {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 !important;
+}
+
+.gsc-upvote-button,
+.gsc-comment-replies-count,
+.gsc-direct-reaction-buttons {
+  display: none !important;
+}
+
+.gsc-reactions-menu,
+.gsc-reactions-button {
+  margin: 0 !important;
+}
+
+.gsc-reactions-button,
+.gsc-reactions-menu summary {
+  display: inline-flex !important;
+  min-height: 30px;
+  align-items: center;
+  gap: 3px;
+  padding: 0 8px !important;
+  border: 1px solid transparent !important;
+  border-radius: 999px !important;
+  color: var(--color-fg-muted) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 0.75rem;
+}
+
+.gsc-reactions-button::after,
+.gsc-reactions-menu summary::after {
+  content: "+";
+  color: var(--color-accent-fg);
+  font-size: 0.875rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gsc-reactions-button:hover,
+.gsc-reactions-menu summary:hover {
+  border-color: var(--color-border-muted) !important;
+  background: var(--color-canvas-subtle) !important;
+}
+
+.gsc-reactions-button svg,
+.gsc-reactions-menu summary svg {
+  display: none !important;
+}
+
+.gsc-reactions-popover {
+  right: auto !important;
+  left: auto !important;
+  z-index: 20;
+  border-radius: 12px;
+  box-shadow: var(--comment-shadow);
+}
+
+/* Replies remain compact and indented inside the parent card. */
+.gsc-replies {
+  margin: 0 12px 12px 44px;
+  border: 1px solid var(--color-border-muted) !important;
+  border-radius: 10px;
+  background: var(--color-canvas-subtle) !important;
+}
+
+.gsc-reply {
+  padding: 10px 12px;
+}
+
+.gsc-reply + .gsc-reply {
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.gsc-reply-header,
+.gsc-reply-author {
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+}
+
+.gsc-reply-author-avatar {
+  width: 24px;
+  min-width: 24px;
+  margin: 0;
+}
+
+.gsc-reply-author-avatar img {
+  width: 24px !important;
+  height: 24px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+}
+
+.gsc-reply-author > span {
+  font-weight: 600;
+}
+
+.gsc-reply-edited {
+  color: var(--color-fg-subtle);
+  font-size: 0.6875rem;
+}
+
+.gsc-reply-footer {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+}
+
+/* Main comment box. */
+.gsc-comment-box:not(.gsc-comment-box-is-reply) {
+  overflow: hidden;
+  border: 1px solid var(--color-border-default) !important;
+  border-radius: 12px;
+  background: var(--color-canvas-default);
+  box-shadow: var(--comment-shadow);
+}
+
+.gsc-comment-box-tabs {
+  min-height: 43px;
+  padding-top: 2px;
+  border-bottom: 1px solid var(--color-border-muted);
+  background: var(--comment-header-bg) !important;
+}
+
+.gsc-comment-box-tabs > div:first-child {
+  margin: 0 8px !important;
+  display: flex;
+  align-items: flex-end;
+}
+
+.gsc-comment-box-md-toolbar {
+  align-items: center;
+  margin: 0 9px 0 auto;
+}
+
+.gsc-comment-box-tabs button {
+  min-height: 34px;
+  margin: 0 !important;
+  padding: 0 16px !important;
+  border-color: transparent !important;
+  border-bottom-color: transparent !important;
+  border-radius: 7px 7px 0 0 !important;
+  color: var(--color-fg-muted) !important;
+  background: transparent !important;
+  font-size: 0.8125rem;
+}
+
+.gsc-comment-box-tabs button:hover {
+  color: var(--color-fg-default) !important;
+}
+
+.gsc-comment-box-tabs button[class*='color-bg-canvas'] {
+  border-color: var(--color-border-muted) !important;
+  border-bottom-color: var(--comment-header-bg) !important;
+  color: var(--color-fg-default) !important;
+  background: var(--color-canvas-default) !important;
+  font-weight: 650;
+}
+
+.gsc-toolbar-item {
+  margin: 0 9px 0 0;
+  color: var(--color-fg-muted);
+}
+
+.gsc-comment-box-main {
+  margin: 0 !important;
+}
+
+.gsc-comment-box-write,
+.gsc-comment-box-textarea,
+.gsc-comment-box-textarea-extras {
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: var(--color-canvas-default) !important;
+}
+
+.gsc-comment-box-write:focus-within,
+.gsc-comment-box-textarea:focus {
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.gsc-comment-box-textarea {
+  min-height: 118px;
+  padding: 14px 16px 10px !important;
+  color: var(--color-fg-default);
+  font-family: var(--font-s);
+  font-size: 0.875rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.gsc-comment-box-textarea::placeholder {
+  color: var(--color-fg-subtle);
+}
+
+.gsc-comment-box-textarea-extras {
+  min-height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0 12px !important;
+  border-top: 1px dashed var(--color-border-muted) !important;
+}
+
+.gsc-comment-box-markdown-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--color-fg-muted);
+  font-size: 0.75rem;
+}
+
+.gsc-comment-box-bottom {
+  min-height: 54px;
+  margin: 0 !important;
+  padding: 9px 12px;
+  border-top: 1px solid var(--color-border-muted);
+}
+
+.gsc-comment-box-bottom > .link-secondary {
+  font-size: 0.75rem;
+}
+
+.gsc-comment-box-buttons {
+  margin-inline-start: auto;
+}
+
+.btn,
+.btn-primary {
+  min-height: 34px;
+  padding-inline: 15px;
+  border-radius: 7px !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.btn {
+  border: 1px solid var(--color-border-muted) !important;
+  color: var(--color-fg-default) !important;
+  background: var(--color-canvas-subtle) !important;
+}
+
+.btn-primary {
+  color: #fff !important;
+  background: var(--comment-action) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--comment-action-hover) !important;
+}
+
+.btn-primary:disabled {
+  color: rgb(255 255 255 / 72%) !important;
+  background: color-mix(in srgb, var(--comment-action) 62%, transparent) !important;
+}
+
+/* Reply boxes inside a card should not visually compete with the main box. */
+.gsc-comment-box-is-reply {
+  margin: 0 12px 12px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-muted) !important;
+  border-radius: 10px;
+  background: var(--color-canvas-default);
+}
+
+.gsc-reply-box {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.gsc-reply-box > button {
+  min-height: 36px;
+  margin: 12px;
+  border: 1px dashed var(--color-border-muted) !important;
+  border-radius: 9px;
+  background: transparent !important;
+  color: var(--color-fg-muted) !important;
+  font-size: 0.8125rem;
+}
+
+.gsc-pagination {
+  border: 1px solid var(--color-border-muted);
+  border-radius: 10px;
+  background: var(--color-canvas-default);
+}
+
+@media (max-width: 480px) {
+  .gsc-comment {
+    padding-inline-start: 50px;
+  }
+
+  .gsc-comment-author-avatar img {
+    top: -3px;
+    left: -50px;
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  .gsc-comment-header,
+  .gsc-comment-content,
+  .gsc-reply-content,
+  .gsc-comment-box-preview {
+    padding-inline: 12px !important;
+  }
+
+  .gsc-comment-header {
+    min-height: 58px;
+    padding-top: 32px !important;
+    padding-inline-end: 64px !important;
+  }
+
+  .gsc-comment-footer {
+    top: 6px;
+    right: 9px;
+  }
+
+  .gsc-replies {
+    margin-inline: 8px 8px 10px;
+  }
+
+  .gsc-comment-box-tabs button {
+    padding-inline: 11px !important;
+  }
+}

@@ -1,0 +1,51 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { articleSlug, getPublishedArticles } from "../../lib/articles";
+import { getLegacyIndex, renderArticle, searchDocument } from "../../lib/legacy-content";
+import ReadingApp from "../../react/components/ReadingApp";
+
+export async function getStaticPaths() {
+  const articles = await getPublishedArticles();
+  return articles.map((article) => ({
+    params: { slug: articleSlug(article) },
+    props: { article }
+  }));
+}
+
+const { article } = Astro.props;
+const slug = articleSlug(article);
+const index = await getLegacyIndex();
+const essay = index.essays[slug];
+const contentData = renderArticle(article);
+const fullText = searchDocument(article.data.title, article.data.description, contentData);
+const giscus = {
+  enabled: Boolean(
+    import.meta.env.PUBLIC_GISCUS_REPO &&
+      import.meta.env.PUBLIC_GISCUS_REPO_ID &&
+      import.meta.env.PUBLIC_GISCUS_CATEGORY &&
+      import.meta.env.PUBLIC_GISCUS_CATEGORY_ID
+  ),
+  repo: import.meta.env.PUBLIC_GISCUS_REPO ?? "",
+  repoId: import.meta.env.PUBLIC_GISCUS_REPO_ID ?? "",
+  category: import.meta.env.PUBLIC_GISCUS_CATEGORY ?? "",
+  categoryId: import.meta.env.PUBLIC_GISCUS_CATEGORY_ID ?? ""
+};
+---
+
+<BaseLayout
+  title={essay.title}
+  description={essay.summary}
+  image={essay.cover || undefined}
+  article
+  publishedTime={article.data.date}
+>
+  <ReadingApp
+    client:load
+    essay={essay}
+    essays={index.essays}
+    essayOrder={index.essayOrder}
+    contentData={contentData}
+    giscus={giscus}
+  />
+  <div class="pagefind-source" data-pagefind-body set:html={fullText} />
+</BaseLayout>

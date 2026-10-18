@@ -1,0 +1,11 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getLegacyIndex } from "../lib/legacy-content";
+import ListApp from "../react/components/ListApp";
+
+const index = await getLegacyIndex();
+---
+
+<BaseLayout>
+  <ListApp client:load index={index} />
+</BaseLayout>

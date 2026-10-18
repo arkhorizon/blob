@@ -1,0 +1,12 @@
+name = "shiye-2"
+compatibility_date = "2026-10-07"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "shiye"
+database_id = "80d5878d-9c60-4f85-bb2e-75f56529f274"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "a34433be74364948a743bb87daaca1b0"

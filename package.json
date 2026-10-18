@@ -1,0 +1,28 @@
+{
+  "name": "shiye-2",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run validate && astro build && pagefind --site dist",
+    "preview": "astro preview",
+    "validate": "node scripts/validate-content.mjs",
+    "import:shiye": "node scripts/import-shiye.mjs",
+    "upload:r2": "node scripts/upload-r2.mjs"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.0.1",
+    "@lucide/astro": "^1.52.0",
+    "astro": "^7.3.6",
+    "marked": "^18.1.0",
+    "pagefind": "^1.5.2",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260613.1",
+    "pinyin-pro": "^3.26.0",
+    "yaml": "^2.8.1"
+  }
+}

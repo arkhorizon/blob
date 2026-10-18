@@ -1,0 +1,8 @@
+.DS_Store
+.astro/
+.wrangler/
+node_modules/
+dist/
+.env
+.env.local
+content/r2-upload-manifest.json
