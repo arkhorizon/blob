@@ -13,13 +13,23 @@ function getInitialTheme() {
   }
 }
 
+function getInitialReadingTheme() {
+  if (typeof window === "undefined") return "oriental";
+  try {
+    const theme = window.localStorage.getItem(THEME_KEY);
+    return ["oriental", "magazine", "night"].includes(theme) ? theme : "oriental";
+  } catch {
+    return "oriental";
+  }
+}
+
 function goBack() {
   if (window.history.length > 1) window.history.back();
   else window.location.assign("/");
 }
 
 export default function ReadingApp({ essay, essays, essayOrder, contentData, giscus }) {
-  const [theme, setTheme] = useState(getInitialTheme);
+  const [theme, setTheme] = useState(getInitialReadingTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);

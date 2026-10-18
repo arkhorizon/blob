@@ -1,3 +1,5 @@
+@import url("./shiye-comments-common.css?v=common-v8");
+
 @import url("./shiye-light-base.css?v=base-v5");
 
 body,
@@ -25,7 +27,6 @@ main {
   --color-accent-muted: rgb(45 58 140 / 28%);
   --color-accent-subtle: rgb(45 58 140 / 7%);
 }
-/* Inlined layout overrides */
 /* Shared layout overrides for current Giscus DOM. */
 * {
   box-sizing: border-box;
@@ -43,7 +44,7 @@ main,
 }
 
 .gsc-main {
-  gap: 20px;
+  gap: 0;
 }
 
 .gsc-reactions {
@@ -57,8 +58,6 @@ main,
 .gsc-header {
   min-height: 32px;
   margin: 0 !important;
-  padding-bottom: 2px;
-  border-bottom: 1px solid var(--color-border-muted);
   align-items: center;
 }
 
@@ -108,6 +107,7 @@ main,
 /* Top-level comments: avatar outside a unified rounded card. */
 .gsc-timeline {
   gap: 24px;
+  order: 1;
 }
 
 .gsc-timeline.hidden {
@@ -353,6 +353,8 @@ main,
   border-radius: 12px;
   background: var(--color-canvas-default);
   box-shadow: var(--comment-shadow);
+  order: 2;
+  margin-top: 22px;
 }
 
 .gsc-comment-box-tabs {
@@ -458,6 +460,10 @@ main,
   margin: 0 !important;
   padding: 9px 12px;
   border-top: 1px solid var(--color-border-muted);
+}
+
+.gsc-comment-box-bottom > .link-secondary {
+  display: none !important;
 }
 
 .gsc-comment-box-bottom > .link-secondary {

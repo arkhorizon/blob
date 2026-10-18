@@ -15,7 +15,7 @@ main,
 }
 
 .gsc-main {
-  gap: 20px;
+  gap: 22px;
 }
 
 .gsc-reactions {
@@ -80,6 +80,7 @@ main,
 /* Top-level comments: avatar outside a unified rounded card. */
 .gsc-timeline {
   gap: 24px;
+  order: 1;
 }
 
 .gsc-timeline.hidden {
@@ -325,6 +326,7 @@ main,
   border-radius: 12px;
   background: var(--color-canvas-default);
   box-shadow: var(--comment-shadow);
+  order: 2;
 }
 
 .gsc-comment-box-tabs {
@@ -433,6 +435,7 @@ main,
 }
 
 .gsc-comment-box-bottom > .link-secondary {
+  display: none !important;
   font-size: 0.75rem;
 }
 

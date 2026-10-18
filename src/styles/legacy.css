@@ -2974,10 +2974,79 @@ mark.searchHL {
   font-size: 1.1rem;
   font-weight: 600;
   color: var(--tx);
+  margin: 0;
+}
+.giscus-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin-bottom: 18px;
+}
+.giscus-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  color: var(--tx2);
+  font-family: var(--font-s);
+  font-size: 0.8125rem;
+  line-height: 1;
+}
+.giscus-account img {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: 1px solid var(--bd2);
+  border-radius: 50%;
+  object-fit: cover;
+}
+.giscus-account-name {
+  max-width: 150px;
+  overflow: hidden;
+  color: var(--tx);
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.giscus-account button {
+  flex: 0 0 auto;
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid var(--bd2);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tx3);
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.75rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.giscus-account button:hover {
+  border-color: var(--ac);
+  background: var(--ac-bg);
+  color: var(--ac);
+}
+.giscus-account-anonymous {
+  color: var(--tx3);
 }
 .giscus-comments iframe {
   width: 100%;
+}
+
+@media (max-width: 520px) {
+  .giscus-heading {
+    align-items: flex-start;
+  }
+
+  .giscus-account {
+    max-width: 55%;
+    justify-content: flex-end;
+  }
+
+  .giscus-account-name {
+    max-width: 84px;
+  }
 }
 .giscus-error {
   color: var(--tx3);

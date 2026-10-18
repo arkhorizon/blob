@@ -26,3 +26,6 @@ export function pidFetch(url, options = {}) {
   headers.set("X-Sy-Id", pid);
   return fetch(url, { ...options, headers });
 }
+
+// giscus stores the OAuth state returned by its own sign-in flow under this key.
+export const GISCUS_SESSION_KEY = "giscus-session";

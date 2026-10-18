@@ -20,6 +20,29 @@ function getInitialTheme() {
   }
 }
 
+function restoreNavigationState() {
+  const state = window.history.state;
+  if (!state?.listState || !state?.listScrollY) return;
+  setActiveCategory(state.listState.activeCategory ?? null);
+  setActiveTags(new Set(state.listState.activeTags ?? []));
+  setSearchQuery(state.listState.searchQuery ?? "");
+  requestAnimationFrame(() => window.scrollTo(state.listScrollX ?? 0, state.listScrollY));
+}
+
+function saveNavigationState(activeCategory, activeTags, searchQuery) {
+  const state = window.history.state;
+  const { scrollX, scrollY } = window;
+  window.history.replaceState(
+    {
+      ...state,
+      listState: { activeCategory, activeTags: [...activeTags], searchQuery },
+      listScrollX: scrollX,
+      listScrollY: scrollY
+    },
+    ""
+  );
+}
+
 function navigateToEssay(id) {
   navigate(`/e/${encodeURIComponent(id)}`);
 }
@@ -45,6 +68,13 @@ export default function ListApp({ index: initialIndex }) {
     document.documentElement.setAttribute("data-theme", theme);
     window.localStorage.setItem("sy-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    restoreNavigationState();
+    const onBeforePreparation = () => saveNavigationState(activeCategory, activeTags, searchQuery);
+    document.addEventListener("astro:before-preparation", onBeforePreparation);
+    return () => document.removeEventListener("astro:before-preparation", onBeforePreparation);
+  }, [activeCategory, activeTags, searchQuery]);
 
   useEffect(() => {
     let cancelled = false;

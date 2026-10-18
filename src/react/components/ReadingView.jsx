@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { navigate } from "astro:transitions/client";
-import { formatCount, getProgress, postView, saveProgress } from "../lib/api";
+import { formatCount, postView, saveProgress } from "../lib/api";
 import BackToTop from "./BackToTop";
 import GiscusComments from "./GiscusComments";
 import ImageLightbox from "./ImageLightbox";
@@ -107,7 +107,6 @@ export default function ReadingView({
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
     isRestoringRef.current = true;
     progressReadyRef.current = false;
     lastSaveRef.current = 0;
@@ -115,36 +114,22 @@ export default function ReadingView({
     if (viewedRef.current !== essayId) {
       viewedRef.current = essayId;
       postView(essayId).then((count) => {
-        if (!cancelled && count != null) setViewCount(count);
+        if (count != null) setViewCount(count);
       });
     }
 
-    const restore = async () => {
-      const hashMatch = window.location.hash.match(/^#c-(\d+)$/);
-      let nextChapter = 0;
-      let restoreProgress = null;
+    const hashMatch = window.location.hash.match(/^#c-(\d+)$/);
+    let nextChapter = 0;
+    if (hashMatch) {
+      const hashChapter = parseInt(hashMatch[1], 10) - 1;
+      if (hashChapter >= 0 && hashChapter < chapters.length) nextChapter = hashChapter;
+    }
+    chapterIdxRef.current = nextChapter;
+    setChapterIdx(nextChapter);
+    pendingRestoreRef.current = null;
+    requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
 
-      if (hashMatch) {
-        const hashChapter = parseInt(hashMatch[1], 10) - 1;
-        if (hashChapter >= 0 && hashChapter < chapters.length) nextChapter = hashChapter;
-      } else {
-        const progress = await getProgress(essayId);
-        if (!cancelled && progress) {
-          if (progress.chapter >= 0 && progress.chapter < chapters.length) nextChapter = progress.chapter;
-          if (typeof progress.p === "number") restoreProgress = progress.p;
-        }
-      }
-      if (cancelled) return;
-
-      chapterIdxRef.current = nextChapter;
-      setChapterIdx(nextChapter);
-      pendingRestoreRef.current = restoreProgress;
-      requestAnimationFrame(() => requestAnimationFrame(restoreScroll));
-    };
-
-    restore();
     return () => {
-      cancelled = true;
     };
   }, [chapters.length, essayId, restoreScroll]);
 
@@ -240,6 +225,15 @@ export default function ReadingView({
 
   const handleNav = useCallback((id) => {
     navigate(`/e/${encodeURIComponent(id)}`);
+  }, []);
+
+  const handleBack = useCallback(() => {
+    const current = window.history.state?.index;
+    if (current == null || current <= 0) {
+      navigate("/");
+      return;
+    }
+    window.history.back();
   }, []);
 
   const handleChapterNav = useCallback((nextIdx) => {

@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { formatCount } from '../lib/api';
 
 /** Highlight occurrences of `query` inside `text` with <mark> tags. */
@@ -16,6 +17,15 @@ function HighlightText({ text, query }) {
 }
 
 export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuery, viewsMap }) {
+  useEffect(() => {
+    for (const essay of essays.slice(0, 6)) {
+      if (!essay.cover) continue;
+      const image = new Image();
+      image.src = essay.cover;
+      image.decoding = "async";
+    }
+  }, [essays]);
+
   if (!essays.length) {
     return (
       <div className="listView">
