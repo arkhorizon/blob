@@ -10,6 +10,14 @@ export default defineConfig({
   trailingSlash: "never",
   // Astro dev server does not process public/_headers; Giscus loads custom
   // themes as anonymous cross-origin stylesheets and therefore needs CORS.
+  security: {
+    allowedDomains: [
+      {
+        hostname: "giscus.app",
+        protocol: "https"
+      }
+    ]
+  },
   vite: {
     server: {
       cors: {

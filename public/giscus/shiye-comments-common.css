@@ -67,7 +67,6 @@ main,
 }
 
 .gsc-comment {
-  padding-inline-start: 58px;
   font-size: 0.875rem;
   line-height: 1.55;
 }
@@ -98,7 +97,7 @@ main,
 }
 
 .gsc-comment-author-avatar {
-  position: relative;
+  position: static;
   min-width: 0;
 }
 
@@ -488,10 +487,6 @@ main,
 }
 
 @media (max-width: 480px) {
-  .gsc-comment {
-    padding-inline-start: 62px;
-  }
-
   .gsc-comment > .w-full,
   .gsc-comment > div {
     padding-inline-start: 62px;
