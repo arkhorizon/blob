@@ -769,6 +769,10 @@ mark.searchHL {
   animation: fadeUp 0.4s ease both;
   -webkit-tap-highlight-color: transparent;
 }
+/* Route returns and refreshes must show the saved list immediately. */
+.card.noEntry {
+  animation: none;
+}
 /* Route swaps should restore the list immediately instead of replaying entry motion. */
 :root[data-astro-transition] .listHdr,
 :root[data-astro-transition] .card {

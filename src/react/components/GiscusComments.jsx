@@ -6,7 +6,7 @@ function themeUrl(filename) {
         ? import.meta.env.BASE_URL
         : `${import.meta.env.BASE_URL}/`;
     return new URL(
-        `${base}giscus/${filename}?v=comment-style-v8`,
+        `${base}giscus/${filename}?v=comment-style-v9`,
         window.location.origin
     ).toString();
 }

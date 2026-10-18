@@ -14,6 +14,7 @@ export default function ListView({
   onOpenMobileSearch,
   searchQuery,
   viewsMap,
+  animate = true,
 }) {
   return (
     <div className="listView">
@@ -72,6 +73,7 @@ export default function ListView({
         onTagClick={onTagClick}
         searchQuery={searchQuery}
         viewsMap={viewsMap}
+        animate={animate}
       />
     </div>
   );

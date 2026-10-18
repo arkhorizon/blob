@@ -20,13 +20,17 @@ function getInitialTheme() {
   }
 }
 
-function restoreNavigationState() {
+function updateScrollEndState() {
   const state = window.history.state;
-  if (!state?.listState || !state?.listScrollY) return;
-  setActiveCategory(state.listState.activeCategory ?? null);
-  setActiveTags(new Set(state.listState.activeTags ?? []));
-  setSearchQuery(state.listState.searchQuery ?? "");
-  requestAnimationFrame(() => window.scrollTo(state.listScrollX ?? 0, state.listScrollY));
+  if (!state?.listState) return;
+  window.history.replaceState(
+    {
+      ...state,
+      listScrollX: window.scrollX,
+      listScrollY: window.scrollY
+    },
+    ""
+  );
 }
 
 function saveNavigationState(activeCategory, activeTags, searchQuery) {
@@ -59,10 +63,26 @@ export default function ListApp({ index: initialIndex }) {
   const [showBackTop, setShowBackTop] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [viewsMap, setViewsMap] = useState({});
+  const [entered, setEntered] = useState(false);
   const searchSequence = useRef(0);
+  const restoreNavigationState = useCallback(() => {
+    const state = window.history.state;
+    if (!state?.listState || state.listScrollY == null) return;
+    setActiveCategory(state.listState.activeCategory ?? null);
+    setActiveTags(new Set(state.listState.activeTags ?? []));
+    setSearchQuery(state.listState.searchQuery ?? "");
+    requestAnimationFrame(() => {
+      const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      window.scrollTo(state.listScrollX ?? 0, Math.min(state.listScrollY, maxY));
+    });
+  }, []);
 
   const { essays, essayOrder, allTags, categories } = initialIndex;
   const latestDate = essayOrder.length ? essays[essayOrder[0]]?.date : "";
+
+  useEffect(() => {
+    restoreNavigationState();
+  }, [restoreNavigationState]);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -70,10 +90,18 @@ export default function ListApp({ index: initialIndex }) {
   }, [theme]);
 
   useEffect(() => {
-    restoreNavigationState();
+    const alreadyEntered = window.sessionStorage.getItem("sy-list-entered") === "1";
+    setEntered(alreadyEntered);
+    if (!alreadyEntered) {
+      window.sessionStorage.setItem("sy-list-entered", "1");
+    }
     const onBeforePreparation = () => saveNavigationState(activeCategory, activeTags, searchQuery);
     document.addEventListener("astro:before-preparation", onBeforePreparation);
-    return () => document.removeEventListener("astro:before-preparation", onBeforePreparation);
+    window.addEventListener("scrollend", updateScrollEndState, { passive: true });
+    return () => {
+      document.removeEventListener("astro:before-preparation", onBeforePreparation);
+      window.removeEventListener("scrollend", updateScrollEndState);
+    };
   }, [activeCategory, activeTags, searchQuery]);
 
   useEffect(() => {
@@ -282,6 +310,7 @@ export default function ListApp({ index: initialIndex }) {
             onOpenMobileSearch={() => setMobileSearchOpen(true)}
             searchQuery={searchQuery}
             viewsMap={viewsMap}
+            animate={!entered && !isMobile}
           />
           <SiteFooter />
         </main>

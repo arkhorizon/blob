@@ -16,7 +16,7 @@ function HighlightText({ text, query }) {
   );
 }
 
-export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuery, viewsMap }) {
+export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuery, viewsMap, animate = true }) {
   useEffect(() => {
     for (const essay of essays.slice(0, 6)) {
       if (!essay.cover) continue;
@@ -41,8 +41,8 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuer
         return (
           <div
             key={e.id}
-            className="card"
-            style={{ animationDelay: `${i * 0.06}s` }}
+            className={animate ? "card" : "card noEntry"}
+            style={animate ? { animationDelay: `${i * 0.06}s` } : undefined}
             onClick={() => onSelectEssay(e.id)}
           >
             <div className="cardImgW">
