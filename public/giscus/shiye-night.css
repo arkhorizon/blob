@@ -143,7 +143,6 @@ main,
 .gsc-comment-author {
   min-width: 0;
   gap: 8px !important;
-  padding-inline-start: 58px;
 }
 
 .gsc-comment-author-avatar {
@@ -554,7 +553,7 @@ main,
   }
 
   .gsc-comment-author {
-    padding-inline-start: 50px;
+    padding-inline-start: 0;
   }
 
   .gsc-reply-content,

@@ -6,14 +6,14 @@ body,
 .gsc-homepage-bg {
   --font-s: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
   --comment-shadow: 0 1px 2px rgb(44 34 24 / 6%);
-  --comment-header-bg: #f2ebdc;
+  --comment-header-bg: transparent;
   --comment-action: #7ba05b;
   --comment-action-hover: #688a4b;
-  background: #ede4d2;
+  background: transparent;
 }
 
 main {
-  --color-canvas-default: #fffdf8;
+  --color-canvas-default: transparent;
   --color-canvas-overlay: #fffdf8;
   --color-canvas-inset: #f0e9d8;
   --color-canvas-subtle: #f5efdf;
@@ -143,7 +143,6 @@ main,
 .gsc-comment-author {
   min-width: 0;
   gap: 8px !important;
-  padding-inline-start: 58px;
 }
 
 .gsc-comment-author-avatar {
@@ -542,6 +541,11 @@ main,
   background: var(--color-canvas-default);
 }
 
+/* Let the oriental paper gradient show through the comment surfaces. */
+.gsc-replies {
+  background: transparent !important;
+}
+
 @media (max-width: 480px) {
   .gsc-comment-author-avatar img {
     left: -50px;
@@ -554,7 +558,7 @@ main,
   }
 
   .gsc-comment-author {
-    padding-inline-start: 50px;
+    padding-inline-start: 0;
   }
 
   .gsc-reply-content,
