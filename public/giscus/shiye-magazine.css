@@ -125,6 +125,7 @@ main,
 .gsc-comment > div {
   position: relative;
   overflow: visible;
+  padding-inline-start: 74px;
   border: 1px solid var(--color-border-default) !important;
   border-radius: 12px;
   background: var(--color-canvas-default);
@@ -152,8 +153,8 @@ main,
 
 .gsc-comment-author-avatar img {
   position: absolute;
-  top: -5px;
-  left: -58px;
+  top: 8px;
+  left: 16px;
   width: 44px !important;
   height: 44px !important;
   margin: 0 !important;
@@ -541,12 +542,16 @@ main,
 
 @media (max-width: 480px) {
   .gsc-comment {
-    padding-inline-start: 50px;
+    padding-inline-start: 62px;
+  }
+
+  .gsc-comment > .w-full,
+  .gsc-comment > div {
+    padding-inline-start: 62px;
   }
 
   .gsc-comment-author-avatar img {
-    top: -3px;
-    left: -50px;
+    left: 12px;
     width: 38px !important;
     height: 38px !important;
   }
