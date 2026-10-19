@@ -16,6 +16,12 @@ export default function ListView({
   viewsMap,
   animate = true,
 }) {
+  const highlightTerms = searchQuery.trim()
+    ? [searchQuery.trim()]
+    : activeTags
+      ? [...activeTags]
+      : [];
+
   return (
     <div className="listView">
       <div className="listHdr">
@@ -71,7 +77,7 @@ export default function ListView({
         essays={essays}
         onSelectEssay={onSelectEssay}
         onTagClick={onTagClick}
-        searchQuery={searchQuery}
+        highlightTerms={highlightTerms}
         viewsMap={viewsMap}
         animate={animate}
       />

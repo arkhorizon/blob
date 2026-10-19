@@ -249,6 +249,7 @@ body::-webkit-scrollbar-thumb {
   display: flex;
   align-items: center;
   gap: 7px;
+  padding-left: 42px;
   font-family: var(--font);
   font-size: 1.3rem;
   font-weight: 700;
@@ -413,6 +414,82 @@ body::-webkit-scrollbar-thumb {
 /* ═══════════════════════════════════════════
    SIDEBAR — Desktop
    ═══════════════════════════════════════════ */
+.sidebarShell {
+  position: relative;
+  /* The fixed trigger must sit above the header despite its app-level parent. */
+  z-index: 150;
+  flex: 0 0 auto;
+  width: 0;
+  min-width: 0;
+  align-self: flex-start;
+  height: 100%;
+}
+.sidebarShell.collapsed {
+  width: 72px;
+  min-width: 72px;
+}
+.sidebarShell.pinned {
+  width: var(--side-w);
+  min-width: var(--side-w);
+}
+.logoTrigger {
+  position: fixed;
+  top: calc((var(--hdr-h) + calc(env(safe-area-inset-top) * 1.4) - 38px) / 2);
+  left: 16px;
+  z-index: 150;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ac);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.logoTrigger:hover,
+.logoTrigger:focus-visible {
+  border-color: var(--bd2);
+  background: var(--ac-bg);
+  outline: none;
+}
+.logoTrigger svg {
+  grid-area: 1 / 1;
+  width: 22px;
+  height: 22px;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.logoTriggerExpand,
+.logoTriggerCollapse {
+  opacity: 0;
+  transform: scale(0.85);
+}
+@media (hover: hover) {
+  .sidebarShell:not(.pinned) .logoTrigger:hover .logoTriggerMark,
+  .sidebarShell:not(.pinned) .logoTrigger:focus-visible .logoTriggerMark {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  .sidebarShell:not(.pinned) .logoTrigger:hover .logoTriggerExpand,
+  .sidebarShell:not(.pinned) .logoTrigger:focus-visible .logoTriggerExpand {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .sidebarShell.pinned .logoTrigger:hover .logoTriggerMark,
+  .sidebarShell.pinned .logoTrigger:focus-visible .logoTriggerMark {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  .sidebarShell.pinned .logoTrigger:hover .logoTriggerCollapse,
+  .sidebarShell.pinned .logoTrigger:focus-visible .logoTriggerCollapse {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 .sidebar {
   width: var(--side-w);
   min-width: var(--side-w);
@@ -420,7 +497,8 @@ body::-webkit-scrollbar-thumb {
   border-right: 1px solid var(--bd2);
   box-sizing: border-box;
   height: calc(100vh - var(--hdr-h) - calc(env(safe-area-inset-top) * 1.4));
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: calc(var(--hdr-h) + calc(env(safe-area-inset-top) * 1.4));
   overflow: visible;
   padding: 20px 0;
@@ -428,12 +506,11 @@ body::-webkit-scrollbar-thumb {
     background var(--t), border-color var(--t), transform var(--t);
   z-index: 50;
 }
-
 .sidebarInner {
   height: 100%;
   overflow-y: auto;
   opacity: 1;
-  transition: opacity 0.15s;
+  transition: opacity 0.18s ease;
   scrollbar-width: thin;
   scrollbar-color: var(--bd) transparent;
 }
@@ -444,48 +521,6 @@ body::-webkit-scrollbar-thumb {
   background: var(--bd);
   border-radius: 2px;
 }
-/* ─── Sidebar toggle button ─── */
-.sideToggle {
-  position: absolute;
-  top: 12px;
-  right: 8px;
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
-  border: 1px solid var(--bd2);
-  background: var(--bg);
-  color: var(--tx3);
-  display: none; /* hidden on mobile by default */
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s;
-  z-index: 10;
-  -webkit-tap-highlight-color: transparent;
-}
-.sideToggle:hover {
-  color: var(--ac);
-  border-color: var(--ac);
-  background: var(--ac-bg);
-}
-.sideToggle svg {
-  width: 16px;
-  height: 16px;
-}
-.sidebar.collapsed .sideToggle {
-  right: -40px;
-}
-
-/* ─── Desktop: show sidebar toggle, hide header hamburger ─── */
-@media (min-width: 769px) {
-  .sideToggle {
-    display: flex;
-  }
-  .headerLeft .hdrBtn {
-    display: none;
-  }
-}
-
 .sidebar.collapsed {
   width: 0;
   min-width: 0;
@@ -514,6 +549,10 @@ body::-webkit-scrollbar-thumb {
 
 .catHdr {
   display: flex;
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
   align-items: center;
   padding: 7px 20px;
   cursor: pointer;
@@ -854,6 +893,8 @@ mark.searchHL {
   .mobileSearchTag,
   .mobileSearchResult,
   .listSearchToggle,
+  .logoTrigger,
+  .catHdr,
   .mobileSearchClear,
   .backToTopBtn,
   .rdLockedBtn,
@@ -2131,6 +2172,9 @@ mark.searchHL {
   .sidebar {
     padding: 32px 0;
   }
+  .logoTrigger {
+    left: 20px;
+  }
   .sidebarLabel {
     font-size: 0.8rem;
     padding: 0 28px;
@@ -2227,6 +2271,9 @@ mark.searchHL {
   }
   .sidebar {
     padding: 40px 0;
+  }
+  .logoTrigger {
+    left: 26px;
   }
   .sidebarLabel {
     font-size: 0.85rem;
@@ -2398,6 +2445,7 @@ mark.searchHL {
   }
   .logo {
     font-size: 1.15rem;
+    padding-left: 34px;
   }
   .logoIcon {
     width: 22px;
@@ -2413,6 +2461,17 @@ mark.searchHL {
   }
 
   /* Sidebar → drawer */
+  .sidebarShell,
+  .sidebarShell.collapsed {
+    width: 0;
+    min-width: 0;
+  }
+  .logoTrigger {
+    top: calc((var(--hdr-h) - 34px) / 2);
+    left: 12px;
+    width: 34px;
+    height: 34px;
+  }
   .sidebar {
     position: fixed;
     left: 0;
@@ -3057,16 +3116,6 @@ mark.searchHL {
   font-family: var(--font-s);
   font-size: 0.8rem;
   padding: 12px 0;
-}
-
-.pagefind-source {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 @media (prefers-reduced-motion: reduce) {

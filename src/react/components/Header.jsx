@@ -16,7 +16,6 @@ export default function Header({
   searchQuery,
   onSearch,
   onSelectTag,
-  onToggleSidebar,
   onReset,
   onSwitchTheme,
   allTags,
@@ -47,17 +46,8 @@ export default function Header({
   return (
     <header className={`header${hidden ? ' header-hidden' : ''}`}>
       <div className="headerLeft">
-        <button className="hdrBtn" onClick={onToggleSidebar} title="菜单">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
         <div className="logo" onClick={onReset}>
-          <svg className="logoIcon" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <path d="M8 25C11 19 15 11 20 6c1 3 1.5 7.5.5 13-3.5-1-8 0-12.5 6z" style={{ fill: 'var(--ac)' }} opacity=".85"/>
-            <path d="M20 6c2.5-1.5 5.5-.5 7 2" stroke="var(--ac)" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity=".6"/>
-          </svg>
-          Ark<em>拾页</em>
+          <span>Ark<em>拾页</em></span>
         </div>
       </div>
       <div className="headerCenter">
@@ -68,7 +58,7 @@ export default function Header({
           </svg>
           <input
             type="text"
-            placeholder="搜索文章或标签…"
+            placeholder="搜索标题、摘要、作者或标签…"
             value={searchQuery}
             onChange={(e) => {
               onSearch(e.target.value);

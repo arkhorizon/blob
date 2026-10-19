@@ -50,14 +50,6 @@ marked.use({
   }
 });
 
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
 function renderMarkdown(markdown: string, headingOffset: number) {
   const html = marked.parse(markdown, { async: false }) as string;
   let headingIndex = headingOffset;
@@ -137,15 +129,4 @@ export async function getLegacyIndex() {
     allTags: [...tags].sort((a, b) => a.localeCompare(b, "zh-CN")),
     categories: Object.values(CATEGORIES).map((category) => category.title)
   };
-}
-
-export function searchDocument(
-  title: string,
-  description: string,
-  rendered: RenderedArticle
-) {
-  const content = rendered.chapters.length
-    ? rendered.chapters.map((chapter) => `<h2>${escapeHtml(chapter.title)}</h2>${chapter.content}`).join("")
-    : rendered.content;
-  return `<article><h1>${escapeHtml(title)}</h1><p>${escapeHtml(description)}</p>${content}</article>`;
 }

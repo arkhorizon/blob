@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { matchesEssaySearch } from '../lib/search';
 
 function pickRandom(arr, n) {
   const copy = [...arr];
@@ -38,12 +39,7 @@ export default function MobileSearch({
     const q = localQuery.trim().toLowerCase();
     if (!q) return [];
     let list = (essayOrder || []).map((id) => allEssays?.[id]).filter(Boolean);
-    return list.filter((e) =>
-      e.title.toLowerCase().includes(q) ||
-      e.summary.toLowerCase().includes(q) ||
-      e.author?.toLowerCase().includes(q) ||
-      e.tags.some((t) => t.toLowerCase().includes(q))
-    ).slice(0, 20);
+    return list.filter((essay) => matchesEssaySearch(essay, q)).slice(0, 20);
   }, [localQuery, allEssays, essayOrder]);
 
   // Focus input when search page opens.
@@ -146,7 +142,7 @@ export default function MobileSearch({
             enterKeyHint="search"
             autoCapitalize="off"
             autoCorrect="off"
-            placeholder="搜索文章或标签…"
+            placeholder="搜索标题、摘要、作者或标签…"
             value={localQuery}
             onChange={(e) => {
               setLocalQuery(e.target.value);
@@ -227,7 +223,7 @@ export default function MobileSearch({
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
-            <p>输入关键词搜索文章标题、摘要或标签</p>
+            <p>输入关键词搜索文章标题、摘要、作者、译者或标签</p>
           </div>
         )}
       </div>

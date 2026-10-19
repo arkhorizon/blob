@@ -1,7 +1,7 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { articleSlug, getPublishedArticles } from "../../lib/articles";
-import { getLegacyIndex, renderArticle, searchDocument } from "../../lib/legacy-content";
+import { getLegacyIndex, renderArticle } from "../../lib/legacy-content";
 import ReadingApp from "../../react/components/ReadingApp";
 
 export async function getStaticPaths() {
@@ -17,7 +17,6 @@ const slug = articleSlug(article);
 const index = await getLegacyIndex();
 const essay = index.essays[slug];
 const contentData = renderArticle(article);
-const fullText = searchDocument(article.data.title, article.data.description, contentData);
 const giscusDefaults = {
   repo: "arkhorizon/blob-comments",
   repoId: "R_kgDOUyVdig",
@@ -49,5 +48,4 @@ const giscus = {
     contentData={contentData}
     giscus={giscus}
   />
-  <div class="pagefind-source" data-pagefind-body set:html={fullText} />
 </BaseLayout>

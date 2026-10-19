@@ -1,12 +1,19 @@
 import { useEffect } from 'react';
 import { formatCount } from '../lib/api';
 
-/** Highlight occurrences of `query` inside `text` with <mark> tags. */
-function HighlightText({ text, query }) {
-  if (!query || !query.trim()) return text;
-  const esc = query.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const splitRe = new RegExp(`(${esc})`, 'gi');
-  const testRe = new RegExp(`^${esc}$`, 'i'); // no 'g' flag — avoids lastIndex bug
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/** Highlight occurrences of any term inside `text` with <mark> tags. */
+function HighlightText({ text, terms = [] }) {
+  const normalized = [...new Set(terms.map((term) => term.trim()).filter(Boolean))].sort(
+    (a, b) => b.length - a.length
+  );
+  if (!normalized.length) return text;
+  const escaped = normalized.map(escapeRegExp);
+  const splitRe = new RegExp(`(${escaped.join('|')})`, 'gi');
+  const testRe = new RegExp(`^(?:${escaped.join('|')})$`, 'i'); // no 'g' flag — avoids lastIndex bug
   const parts = text.split(splitRe);
   if (parts.length === 1) return text;
   return parts.filter(Boolean).map((part, i) =>
@@ -16,7 +23,12 @@ function HighlightText({ text, query }) {
   );
 }
 
-export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuery, viewsMap, animate = true }) {
+function matchesHighlightTerm(text, terms) {
+  const normalizedText = text.toLowerCase();
+  return terms.some((term) => term.trim() && normalizedText.includes(term.trim().toLowerCase()));
+}
+
+export default function CardGrid({ essays, onSelectEssay, onTagClick, highlightTerms = [], viewsMap, animate = true }) {
   useEffect(() => {
     for (const essay of essays.slice(0, 6)) {
       if (!essay.cover) continue;
@@ -64,7 +76,7 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuer
             </div>
             <div className="cardBody">
               <div className="cardTitle">
-                <HighlightText text={e.title} query={searchQuery} />
+                <HighlightText text={e.title} terms={highlightTerms} />
               </div>
               <div className="cardMeta">
                 {e.author && <span className="cardAuthor">{e.author}</span>}
@@ -73,14 +85,14 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, searchQuer
                 <span className="cardTime">{e.time}</span>
               </div>
               <div className="cardSum">
-                <HighlightText text={e.summary} query={searchQuery} />
+                <HighlightText text={e.summary} terms={highlightTerms} />
               </div>
               <div className="cardFt">
                 <div className="cardTags">
                   {e.tags.map((t) => (
                     <span
                       key={t}
-                      className={`cardTag${searchQuery && t.toLowerCase().includes(searchQuery.toLowerCase()) ? ' cardTagHL' : ''}`}
+                      className={`cardTag${matchesHighlightTerm(t, highlightTerms) ? ' cardTagHL' : ''}`}
                       onClick={(ev) => {
                         ev.stopPropagation();
                         onTagClick?.(t);

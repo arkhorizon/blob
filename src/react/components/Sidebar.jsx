@@ -4,11 +4,11 @@ export default function Sidebar({
   activeCategory,
   collapsed,
   mobileOpen,
+  pinned,
   onToggleCategory,
   onToggleSidebar,
   essays,
   categories,
-  reading,
 }) {
   const categoryCounts = useMemo(() => {
     const counts = {};
@@ -19,47 +19,81 @@ export default function Sidebar({
     return counts;
   }, [essays, categories]);
 
-  const sidebarClass = `sidebar${collapsed ? ' collapsed' : ''}${mobileOpen ? ' open' : ''}`;
-
-  // In reading view, hide the collapse toggle — sidebar stays collapsed
-  if (reading) {
-    return (
-      <aside className="sidebar collapsed">
-        <div className="sidebarInner" />
-      </aside>
-    );
-  }
+  const isHidden = collapsed && !mobileOpen;
+  const shellClass = `sidebarShell${collapsed ? ' collapsed' : ''}${pinned ? ' pinned' : ''}`;
+  const sidebarClass = `sidebar${collapsed ? ' collapsed' : ''}${mobileOpen ? ' open' : ''}${
+    pinned ? ' pinned' : ''
+  }`;
 
   return (
-    <aside className={sidebarClass}>
+    <div className={shellClass}>
       <button
-        className="sideToggle"
+        type="button"
+        className="logoTrigger"
         onClick={onToggleSidebar}
-        title={collapsed ? '展开菜单' : '收起菜单'}
+        title={pinned ? '收起菜单' : '展开菜单'}
+        aria-label={pinned ? '收起菜单' : '展开菜单'}
+        aria-expanded={!isHidden}
+        aria-haspopup="true"
+        aria-controls="homeSidebar"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <svg className="logoTriggerMark" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M8 25C11 19 15 11 20 6c1 3 1.5 7.5.5 13-3.5-1-8 0-12.5 6z" style={{ fill: 'var(--ac)' }} opacity=".85"/>
+          <path d="M20 6c2.5-1.5 5.5-.5 7 2" stroke="var(--ac)" strokeWidth="1.5" fill="none" strokeLinecap="round" opacity=".6"/>
+        </svg>
+        <svg
+          className="logoTriggerExpand"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
           <rect x="3" y="3" width="18" height="18" rx="2" />
           <path d="M9 3v18" />
-          <path d={collapsed ? 'M16 9l3 3-3 3' : 'M19 9l-3 3 3 3'} />
+          <path d="m15.5 9 3 3-3 3" />
+        </svg>
+        <svg
+          className="logoTriggerCollapse"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <rect x="3" y="3" width="18" height="18" rx="2" />
+          <path d="M9 3v18" />
+          <path d="m18.5 9-3 3 3 3" />
         </svg>
       </button>
-      <div className="sidebarInner">
-        <div className="sidebarSection">
-          <div className="sidebarLabel">分类目录</div>
-          {categories.map((cat) => (
-            <div key={cat}>
-              <div
+      <aside
+        id="homeSidebar"
+        className={sidebarClass}
+        aria-label="分类目录"
+        aria-hidden={isHidden}
+        inert={isHidden ? '' : undefined}
+      >
+        <div className="sidebarInner">
+          <div className="sidebarSection">
+            <div className="sidebarLabel">分类目录</div>
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                type="button"
                 className={`catHdr${activeCategory === cat ? ' activeCat' : ''}`}
                 onClick={() => onToggleCategory(cat)}
               >
                 {cat}
                 <span className="cnt">{categoryCounts[cat]}</span>
-              </div>
-            </div>
-          ))}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </div>
   );
 }

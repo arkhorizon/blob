@@ -3,9 +3,6 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-/pagefind/*
-  Cache-Control: public, max-age=3600
-
 /giscus/*
   Cache-Control: public, max-age=60, stale-while-revalidate=300
   Access-Control-Allow-Origin: *

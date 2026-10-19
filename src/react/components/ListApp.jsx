@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { navigate } from "astro:transitions/client";
 import BackToTop from "./BackToTop";
 import ErrorBoundary from "./ErrorBoundary";
@@ -9,6 +9,7 @@ import Sidebar from "./Sidebar";
 import SidebarOverlay from "./SidebarOverlay";
 import SiteFooter from "./SiteFooter";
 import { getViews, readCachedViews } from "../lib/api";
+import { matchesEssaySearch } from "../lib/search";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 function getInitialTheme() {
@@ -57,14 +58,12 @@ export default function ListApp({ index: initialIndex }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeTags, setActiveTags] = useState(() => new Set());
   const [searchQuery, setSearchQuery] = useState("");
-  const [fullTextIds, setFullTextIds] = useState(() => new Set());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [showBackTop, setShowBackTop] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [viewsMap, setViewsMap] = useState({});
   const [entered, setEntered] = useState(false);
-  const searchSequence = useRef(0);
   const restoreNavigationState = useCallback(() => {
     const state = window.history.state;
     if (!state?.listState || state.listScrollY == null) return;
@@ -135,37 +134,12 @@ export default function ListApp({ index: initialIndex }) {
   }, []);
 
   useEffect(() => {
-    const query = searchQuery.trim();
-    if (!query) {
-      setFullTextIds(new Set());
-      return;
-    }
-
-    const sequence = ++searchSequence.current;
-    const timer = setTimeout(async () => {
-      try {
-        const pagefindUrl = "/pagefind/pagefind.js";
-        const pagefind = await import(/* @vite-ignore */ pagefindUrl);
-        const result = await pagefind.search(query);
-        if (sequence !== searchSequence.current) return;
-        const ids = new Set();
-        for (const item of result.results) {
-          const data = await item.data();
-          const match = data.url.match(/\/articles\/([^/?#]+)/);
-          if (match) ids.add(decodeURIComponent(match[1]));
-        }
-        if (sequence === searchSequence.current) setFullTextIds(ids);
-      } catch {
-        if (sequence === searchSequence.current) setFullTextIds(new Set());
-      }
-    }, 180);
-
-    return () => clearTimeout(timer);
-  }, [searchQuery]);
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
-      if (event.key === "Escape") setSearchQuery("");
+      if (event.key === "Escape") {
+        setSearchQuery("");
+        setSidebarCollapsed(true);
+        setSidebarOpen(false);
+      }
       if (
         event.key === "/" &&
         !event.ctrlKey &&
@@ -189,11 +163,38 @@ export default function ListApp({ index: initialIndex }) {
     else setSidebarCollapsed((collapsed) => !collapsed);
   }, [isMobile]);
 
+  useEffect(() => {
+    if (isMobile || sidebarCollapsed) return;
+    const closeOnOutsideClick = (event) => {
+      if (event.target.closest(".sidebarShell")) return;
+      setSidebarCollapsed(true);
+    };
+    document.addEventListener("pointerdown", closeOnOutsideClick);
+    return () => document.removeEventListener("pointerdown", closeOnOutsideClick);
+  }, [isMobile, sidebarCollapsed]);
+
   const handleReset = useCallback(() => {
     setActiveCategory(null);
     setActiveTags(new Set());
     setSearchQuery("");
     window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
+
+  const handleHome = useCallback(() => {
+    const state = window.history.state;
+    if (state) {
+      const nextState = { ...state };
+      delete nextState.listState;
+      delete nextState.listScrollX;
+      delete nextState.listScrollY;
+      window.history.replaceState(nextState, "");
+    }
+
+    if (window.location.pathname === "/" && !window.location.search && !window.location.hash) {
+      window.location.reload();
+    } else {
+      window.location.assign("/");
+    }
   }, []);
 
   const handleSearch = useCallback((query) => {
@@ -241,30 +242,45 @@ export default function ListApp({ index: initialIndex }) {
     }
     const query = searchQuery.trim().toLowerCase();
     if (query) {
-      list = list.filter(
-        (essay) =>
-          fullTextIds.has(essay.id) ||
-          essay.title.toLowerCase().includes(query) ||
-          essay.summary.toLowerCase().includes(query) ||
-          essay.author.toLowerCase().includes(query) ||
-          essay.tags.some((tag) => tag.toLowerCase().includes(query))
-      );
+      list = list.filter((essay) => matchesEssaySearch(essay, query));
     }
     return list;
-  }, [activeCategory, activeTags, essays, essayOrder, fullTextIds, searchQuery]);
+  }, [activeCategory, activeTags, essays, essayOrder, searchQuery]);
 
   const headerInfo = useMemo(() => {
     const query = searchQuery.trim();
     const hasFilter = Boolean(activeCategory || activeTags.size || query);
-    if (query) return { title: `搜索「${query}」`, subtitle: "", showClear: hasFilter };
-    if (activeTags.size) return { title: "话题", subtitle: "", showClear: hasFilter };
+    if (query) {
+      return {
+        title: isMobile
+          ? `搜索「${query}」`
+          : `搜索「${query}」 · 共检索到 ${filteredEssays.length} 篇文章`,
+        subtitle: "",
+        showClear: hasFilter
+      };
+    }
+    if (activeTags.size) {
+      return {
+        title: isMobile ? "话题" : `话题 · 共检索到 ${filteredEssays.length} 篇文章`,
+        subtitle: "",
+        showClear: hasFilter
+      };
+    }
     if (activeCategory) return { title: activeCategory, subtitle: "", showClear: hasFilter };
     return {
-      title: "全部短文",
+      title: "全部文章",
       subtitle: `共 ${essayOrder.length} 篇 · 最近更新于 ${latestDate}`,
       showClear: false
     };
-  }, [activeCategory, activeTags, essayOrder.length, latestDate, searchQuery]);
+  }, [
+    activeCategory,
+    activeTags.size,
+    essayOrder.length,
+    filteredEssays.length,
+    isMobile,
+    latestDate,
+    searchQuery
+  ]);
 
   return (
     <ErrorBoundary resetLabel="重新加载" onReset={() => window.location.reload()}>
@@ -275,8 +291,7 @@ export default function ListApp({ index: initialIndex }) {
         searchQuery={searchQuery}
         onSearch={handleSearch}
         onSelectTag={handleSelectTag}
-        onToggleSidebar={handleToggleSidebar}
-        onReset={handleReset}
+        onReset={handleHome}
         onSwitchTheme={setTheme}
         allTags={allTags}
       />
@@ -285,6 +300,7 @@ export default function ListApp({ index: initialIndex }) {
           activeCategory={activeCategory}
           collapsed={!isMobile && sidebarCollapsed}
           mobileOpen={isMobile && sidebarOpen}
+          pinned={!isMobile && !sidebarCollapsed}
           onToggleCategory={handleToggleCategory}
           onToggleSidebar={handleToggleSidebar}
           essays={essays}

@@ -1,6 +1,6 @@
 # 拾页 2.0
 
-拾页 2.0 是一个以 Markdown 为内容源的 Astro 静态站点。推送 GitHub 后由 Cloudflare Pages 构建，图片走 R2 公网地址，评论使用 giscus，全文搜索索引由 Pagefind 在构建后生成。
+拾页 2.0 是一个以 Markdown 为内容源的 Astro 静态站点。推送 GitHub 后由 Cloudflare Pages 构建，图片走 R2 公网地址，评论使用 giscus。
 
 ## 内容模型
 
@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-完整搜索索引与 Cloudflare Functions 需要构建产物：
+Cloudflare Functions 与生产构建需要构建产物：
 
 ```bash
 npm run build
@@ -125,4 +125,4 @@ npx wrangler d1 execute shiye --file migrations/0001_article_views.sql --remote
 
 ## 搜索
 
-`npm run build` 会在 Astro 构建完成后运行 Pagefind。文章页包含隐藏的全文索引块，搜索结果通过 URL 中的 `/articles/<slug>` 映射回首页列表。
+首页搜索使用构建时生成的元数据索引，匹配文章标题、摘要、作者、译者和标签。搜索在浏览器本地完成，不读取正文。

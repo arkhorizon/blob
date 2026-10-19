@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
-    "build": "npm run validate && astro build && pagefind --site dist",
+    "dev": "NODE_ENV=development astro dev",
+    "build": "npm run validate && astro build",
     "preview": "astro preview",
     "validate": "node scripts/validate-content.mjs",
     "import:shiye": "node scripts/import-shiye.mjs",
@@ -16,7 +16,6 @@
     "@lucide/astro": "^1.52.0",
     "astro": "^7.3.6",
     "marked": "^18.1.0",
-    "pagefind": "^1.5.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
