@@ -224,7 +224,7 @@ export default function ReadingView({
   const nextEssay = idx >= 0 && idx < essayOrder.length - 1 ? essays[essayOrder[idx + 1]] : null;
 
   const handleNav = useCallback((id) => {
-    navigate(`/e/${encodeURIComponent(id)}`);
+    navigate(`/articles/${encodeURIComponent(id)}`);
   }, []);
 
   const handleBack = useCallback(() => {

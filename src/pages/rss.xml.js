@@ -13,7 +13,7 @@ function escapeXml(value) {
 export async function GET({ site }) {
   const articles = await getPublishedArticles();
   const items = articles.map((article) => {
-    const url = new URL(`/e/${articleSlug(article)}`, site);
+    const url = new URL(`/articles/${articleSlug(article)}`, site);
     return `    <item>
       <title>${escapeXml(article.data.title)}</title>
       <link>${url}</link>

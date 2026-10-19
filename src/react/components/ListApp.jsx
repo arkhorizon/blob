@@ -48,7 +48,7 @@ function saveNavigationState(activeCategory, activeTags, searchQuery) {
 }
 
 function navigateToEssay(id) {
-  navigate(`/e/${encodeURIComponent(id)}`);
+  navigate(`/articles/${encodeURIComponent(id)}`);
 }
 
 export default function ListApp({ index: initialIndex }) {
@@ -151,7 +151,7 @@ export default function ListApp({ index: initialIndex }) {
         const ids = new Set();
         for (const item of result.results) {
           const data = await item.data();
-          const match = data.url.match(/\/e\/([^/?#]+)/);
+          const match = data.url.match(/\/articles\/([^/?#]+)/);
           if (match) ids.add(decodeURIComponent(match[1]));
         }
         if (sequence === searchSequence.current) setFullTextIds(ids);

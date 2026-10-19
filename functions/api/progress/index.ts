@@ -6,7 +6,9 @@ const kvKey = (pid: string, slug: string) => `progress:${pid}:${slug}`;
 
 function requestSlug(request: Request): string {
   const slug = new URL(request.url).searchParams.get("slug")?.trim() ?? "";
-  return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 200 ? slug : "";
+  return /^[a-z0-9\p{Script=Han}]+(?:-[a-z0-9\p{Script=Han}]+)*$/u.test(slug) && slug.length <= 200
+    ? slug
+    : "";
 }
 
 export const onRequestGet: PagesFunction<Env> = async ({ request, env }) => {

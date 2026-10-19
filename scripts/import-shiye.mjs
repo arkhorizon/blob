@@ -2,7 +2,6 @@ import fs from "node:fs";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
-import { pinyin } from "pinyin-pro";
 import YAML from "yaml";
 
 const repositoryRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -35,19 +34,12 @@ function fail(message) {
 }
 
 function normalizeSlug(value) {
-  const converted = pinyin(value, {
-    toneType: "none",
-    type: "array",
-    nonZh: "consecutive",
-    v: true
-  })
-    .join(" ")
+  return value
+    .normalize("NFC")
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^a-z0-9\p{Script=Han}]+/gu, "-")
     .replace(/-{2,}/g, "-")
     .replace(/^-|-$/g, "");
-
-  return converted.slice(0, 90).replace(/-$/g, "");
 }
 
 function uniqueSlug(title, sourcePath) {

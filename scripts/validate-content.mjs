@@ -6,7 +6,7 @@ import YAML from "yaml";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const contentRoot = path.join(root, "src/content/articles");
 const allowedCategories = new Set(["personal-blog", "foreign-literature", "chinese-literature"]);
-const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const slugPattern = /^[a-z0-9\p{Script=Han}]+(?:-[a-z0-9\p{Script=Han}]+)*$/u;
 const errors = [];
 const slugs = new Set();
 const categories = new Map([...allowedCategories].map((category) => [category, 0]));
@@ -30,7 +30,7 @@ function validateFile(file) {
   const match = source.match(/^---\r?\n([\s\S]*?)\r?\n---\n?/);
 
   if (!allowedCategories.has(category)) errors.push(`${relative}: unknown category directory`);
-  if (!slugPattern.test(slug) || slug.length > 120) errors.push(`${relative}: invalid slug filename`);
+  if (!slugPattern.test(slug) || slug.length > 80) errors.push(`${relative}: invalid slug filename`);
   if (slugs.has(slug)) errors.push(`${relative}: duplicate slug ${slug}`);
   slugs.add(slug);
   if (!match) {

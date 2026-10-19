@@ -52,18 +52,19 @@ src/content/articles/<category>/<slug>.md
 slug 规则：
 
 - 全局唯一，由文件名决定；frontmatter 不写 slug。
-- 只使用 `a-z`、`0-9`、单连字符；长度不超过 120。
-- 中文标题转无声调拼音后用 `-` 连接，例如 `白夜` → `bai-ye`。
-- 无法从标题推导时，使用稳定英文短语；不要使用日期、随机串、下划线或中文。
-- 重名时追加有语义的限定词，例如 `jian-shu`、`jian-shu-ru-men`，不要只追加数字。
+- 只使用中文汉字、`a-z`、`0-9`、单连字符；长度不超过 80。
+- 直接使用规范化标题，英文小写，空格和标点转单连字符，例如 `白夜` → `白夜`、`阿Q正传` → `阿q正传`。
+- 个人文章可使用稳定英文短语；不要使用日期、随机串、下划线或自动拼音。
+- 重名时追加有语义的限定词，例如 `母亲-高尔斯华绥`，不要只追加数字。
+- slug 是文章稳定 ID；发布后不因标题修改而自动变化。
 
 文章 URL 为：
 
 ```text
-/e/<slug>
+/articles/<slug>
 ```
 
-例如 `src/content/articles/foreign-literature/bai-ye.md` 对应 `/e/bai-ye`。
+例如 `src/content/articles/foreign-literature/白夜.md` 对应 `/articles/白夜`。
 
 ## 4. Frontmatter 协议
 
@@ -274,11 +275,11 @@ npm run preview
 
 检查项：
 
-- `/e/<slug>` 能打开，标题、分类、作者、译者、日期、标签显示正确。
+- `/articles/<slug>` 能打开，标题、分类、作者、译者、日期、标签显示正确。
 - 封面在首页卡片、文章页、OG/Twitter 元信息中均为 `200`。
 - 每个 `## 章节名` 都出现在目录，分章导航顺序正确，空章节被过滤。
 - 全部插图加载成功，caption 自然，点击可打开 lightbox。
-- 搜索该文章标题或独特段落能命中 `/e/<slug>`。
+- 搜索该文章标题或独特段落能命中 `/articles/<slug>`。
 - `updated` 只在确实更新时变化，`draft` 不为 `true`。
 - 浏览器控制台无与文章渲染相关的新错误。
 
@@ -348,7 +349,7 @@ npx wrangler pages deploy dist
 部署后检查：
 
 ```bash
-curl -L -s -o /dev/null -w '%{http_code}\n' https://arkblob.ccwu.cc/e/<slug>
+curl -L -s -o /dev/null -w '%{http_code}\n' https://arkblob.ccwu.cc/articles/<slug>
 ```
 
 返回 `200` 且内容为当前版本，发布完成。
@@ -372,7 +373,7 @@ curl -L -s -o /dev/null -w '%{http_code}\n' https://arkblob.ccwu.cc/e/<slug>
 ```text
 文章：<title>
 路径：src/content/articles/<category>/<slug>.md
-线上路由：/e/<slug>
+线上路由：/articles/<slug>
 章节：N 章 / 单篇
 封面：https://img.arkblob.ccwu.cc/articles/<slug>/cover.jpg
 插图：N 张已上传并返回 200

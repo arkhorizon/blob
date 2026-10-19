@@ -12,7 +12,7 @@ foreign-literature  国外文学
 chinese-literature  中国文学
 ```
 
-文件名即全局唯一 slug，由中文自动拼音生成。分类由一级目录推导，不写入 frontmatter。
+文件名即全局唯一 slug，也是文章的稳定 ID。slug 使用中文或小写英文，不自动转拼音；分类由一级目录推导，不写入 frontmatter。
 
 ```yaml
 ---
@@ -44,7 +44,7 @@ npm run preview
 
 ## 数据迁移
 
-从拾页 1.0 导入时，会合并既定分类、按标题自动生成拼音 slug、保留 tag，并把多章节作品合并为一个 Markdown 文件：
+从拾页 1.0 导入时，会合并既定分类、按标题生成语义 slug、保留 tag，并把多章节作品合并为一个 Markdown 文件：
 
 ```bash
 SHIYE_SOURCE_DIR=/Volumes/SSD/Work/code/self/shiye-books/data \
@@ -54,7 +54,15 @@ npm run import:shiye
 
 导入结果包含 `content/r2-upload-manifest.json`，可用它把源图片上传到 R2 的 `articles/...` 路径。阅读量不会迁移，站点会从 0 开始计数。迁移脚本默认导出 103 篇文章：国外文学 98 篇、中国文学 5 篇；解读、母婴、信件不迁移，个人博客为空分类。
 
-文章路由统一为 `/e/<slug>`。slug 由文件名决定，全局唯一，frontmatter 不再单独维护 slug。
+文章路由统一为 `/articles/<slug>`。slug 由文件名决定，全局唯一，发布后不再修改；frontmatter 不单独维护 slug。旧 `/e/<拼音>` 路由由 `public/_redirects` 永久跳转到新路由。
+
+浏览量按 slug 存储在 D1，阅读进度按 slug 存储在 KV。部署本次路由迁移时执行：
+
+```bash
+npx wrangler d1 execute shiye --file migrations/0002_rename_article_slugs.sql --remote
+```
+
+KV 阅读进度为匿名用户分散存储，无法安全地全站批量枚举；如需保留，可参考 `scripts/article-slug-map.csv` 手动迁移对应 key，或接受旧进度失效。
 
 ## 图片上传
 
@@ -117,4 +125,4 @@ npx wrangler d1 execute shiye --file migrations/0001_article_views.sql --remote
 
 ## 搜索
 
-`npm run build` 会在 Astro 构建完成后运行 Pagefind。文章页包含隐藏的全文索引块，搜索结果通过 URL 中的 `/e/<slug>` 映射回首页列表。
+`npm run build` 会在 Astro 构建完成后运行 Pagefind。文章页包含隐藏的全文索引块，搜索结果通过 URL 中的 `/articles/<slug>` 映射回首页列表。

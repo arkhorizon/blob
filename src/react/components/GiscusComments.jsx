@@ -12,8 +12,8 @@ function themeUrl(filename) {
 }
 
 function discussionTerm(pathname) {
-  const match = pathname.match(/^\/e\/([^/?#]+)/);
-  return match ? `/e/${decodeURIComponent(match[1])}` : pathname;
+  const match = pathname.match(/^\/articles\/([^/?#]+)/);
+  return match ? `/articles/${decodeURIComponent(match[1])}` : pathname;
 }
 
 const GISCUS_THEMES = {

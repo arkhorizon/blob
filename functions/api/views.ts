@@ -2,7 +2,7 @@ type Env = {
   DB: D1Database;
 };
 
-const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const SLUG_PATTERN = /^[a-z0-9\p{Script=Han}]+(?:-[a-z0-9\p{Script=Han}]+)*$/u;
 
 function json(data: unknown, status = 200): Response {
   return new Response(JSON.stringify(data), {
