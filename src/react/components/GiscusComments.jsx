@@ -60,7 +60,11 @@ export default function GiscusComments({ config, theme }) {
             const handleMessage = (event) => {
               if (event.origin !== "https://giscus.app") return;
               const payload = event.data?.giscus;
-              if (!payload || payload.error || !payload.viewer) return;
+              // Newer giscus messages can contain a viewer alongside a 404.
+              if (
+                !payload?.viewer ||
+                (payload.error && payload.error !== "Discussion not found")
+              ) return;
 
               const viewer = payload.viewer;
               setAccount({
