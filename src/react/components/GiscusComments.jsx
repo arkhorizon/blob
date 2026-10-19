@@ -22,9 +22,74 @@ const GISCUS_THEMES = {
   night: "shiye-night.css"
 };
 
+function readGiscusSession() {
+  try {
+    const url = new URL(window.location.href);
+    const incomingSession = url.searchParams.get("giscus");
+    if (incomingSession) {
+      window.localStorage.setItem(GISCUS_SESSION_KEY, JSON.stringify(incomingSession));
+      url.searchParams.delete("giscus");
+      url.hash = "";
+      window.history.replaceState(undefined, document.title, url.toString());
+      return incomingSession;
+    }
+
+    const savedSession = window.localStorage.getItem(GISCUS_SESSION_KEY);
+    if (!savedSession) return "";
+    const session = JSON.parse(savedSession);
+    return typeof session === "string" ? session : "";
+  } catch {
+    return "";
+  }
+}
+
 export default function GiscusComments({ config, theme }) {
     const containerRef = useRef(null);
     const [account, setAccount] = useState(null);
+
+    useEffect(() => {
+        if (!config.enabled) return;
+
+        const session = readGiscusSession();
+        if (!session) {
+            setAccount(null);
+            return;
+        }
+
+        const controller = new AbortController();
+        fetch("/api/giscus/viewer", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ session }),
+            signal: controller.signal
+        })
+            .then(async (response) => {
+                if (!response.ok) {
+                    if (response.status === 400 || response.status === 401) {
+                        try {
+                            window.localStorage.removeItem(GISCUS_SESSION_KEY);
+                        } catch {}
+                        setAccount(null);
+                    }
+                    return;
+                }
+                const viewer = await response.json();
+                setAccount({
+                    login: viewer.login || "",
+                    avatarUrl: viewer.avatarUrl || "",
+                    url: viewer.url || ""
+                });
+            })
+            .catch((error) => {
+                if (error?.name === "AbortError") return;
+                try {
+                    window.localStorage.removeItem(GISCUS_SESSION_KEY);
+                } catch {}
+                setAccount(null);
+            });
+
+        return () => controller.abort();
+    }, [config.enabled]);
 
     useEffect(() => {
         if (!config.enabled) return;
