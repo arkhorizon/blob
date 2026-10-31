@@ -227,15 +227,6 @@ export default function ReadingView({
     navigate(`/articles/${encodeURIComponent(id)}`);
   }, []);
 
-  const handleBack = useCallback(() => {
-    const current = window.history.state?.index;
-    if (current == null || current <= 0) {
-      navigate("/");
-      return;
-    }
-    window.history.back();
-  }, []);
-
   const handleChapterNav = useCallback((nextIdx) => {
     setChapterIdx(nextIdx);
     const nextState = window.history.state;
@@ -352,7 +343,7 @@ export default function ReadingView({
         <div className="readingInner">
           <div className={`rdTop${topScrolled ? " scrolled" : ""}`} ref={topRef}>
             <div className="rdTopLeft">
-              <button className="rdBack" onClick={onBack} title="返回列表">
+              <button className="rdBack" onClick={onBack} title="返回首页" aria-label="返回首页">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M19 12H5" />
                   <path d="m12 19-7-7 7-7" />

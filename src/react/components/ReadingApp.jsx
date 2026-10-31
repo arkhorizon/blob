@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { navigate } from "astro:transitions/client";
 import ErrorBoundary from "./ErrorBoundary";
 import ReadingView from "./ReadingView";
 
@@ -23,9 +24,8 @@ function getInitialReadingTheme() {
   }
 }
 
-function goBack() {
-  if (window.history.length > 1) window.history.back();
-  else window.location.assign("/");
+function goHome() {
+  navigate("/");
 }
 
 export default function ReadingApp({ essay, essays, essayOrder, contentData, giscus }) {
@@ -48,7 +48,7 @@ export default function ReadingApp({ essay, essays, essayOrder, contentData, gis
         giscus={giscus}
         theme={theme}
         onThemeChange={handleThemeChange}
-        onBack={goBack}
+        onBack={goHome}
       />
     </ErrorBoundary>
   );
