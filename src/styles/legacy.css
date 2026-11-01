@@ -1778,6 +1778,18 @@ mark.searchHL {
   margin-bottom: 1.8em;
   text-align: justify;
 }
+/* Serif glyphs can feel heavy on low-contrast displays in dark mode. */
+[data-theme='night'] .article {
+  font-family: var(--font-s);
+  font-weight: 400;
+  color: #c9bdaa;
+  letter-spacing: 0.012em;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+[data-theme='night'] .article p {
+  font-weight: 400;
+}
 [data-theme='oriental'] .article > p:first-of-type::first-letter {
   float: left;
   font-size: 3.6em;
