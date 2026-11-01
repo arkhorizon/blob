@@ -11,11 +11,6 @@ cover: https://img.arkblob.ccwu.cc/articles/pi-agent-nb/cover.jpg
 draft: false
 ---
 
-# Pi 深度系列：一个极简内核如何长成一个生态
-
-> 系列：拆解 pi coding agent 的核心机制、动态组装、loop 恢复与记忆设计
-> 读者假设：你已深入用过 agent loop / tool call / 上下文工程 / 压缩 / 记忆 / hook，本文不讲这些基础概念，只讲 pi 做了什么不一样的。
-
 ## 第 1 章 极简内核的哲学：一个 harness，不是一艘航母
 
 **所有 agent 框架都在做加法，pi 在做减法。**
