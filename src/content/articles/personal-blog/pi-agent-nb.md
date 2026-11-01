@@ -121,8 +121,8 @@ convertToLlm: (messages) => messages.flatMap(m => {
 
 ```mermaid
 flowchart LR
-    A[AgentMessage[]<br/>开放联合类型] -->|transformContext<br/>可选: 裁剪/注入| B[AgentMessage[]]
-    B -->|convertToLlm<br/>必选: 过滤/转写| C[Message[]<br/>user/assistant/toolResult]
+    A["AgentMessage[]<br/>开放联合类型"] -->|transformContext<br/>可选: 裁剪/注入| B["AgentMessage[]"]
+    B -->|convertToLlm<br/>必选: 过滤/转写| C["Message[]<br/>user/assistant/toolResult"]
     C --> D[LLM Provider]
     D -->|流式响应| E[AgentMessage 追加进树]
     E -->|下一轮| A
@@ -634,13 +634,13 @@ export function readCodemodeStore(branch: readonly SessionEntry[]): Record<strin
 **③ Compaction 结构化摘要。** 第 2 章看过机制，这里看内容——摘要 prompt 要求的**固定格式**（`compaction.ts` 源码节选）：
 
 ```text
-## Goal            —— 用户想完成什么
-## Constraints & Preferences
-## Progress
-### Done / ### In Progress / ### Blocked
-## Key Decisions   —— 决策 + 理由
-## Next Steps      —— 有序清单
-## Critical Context —— 精确保留文件路径、函数名、错误信息
+# Goal            —— 用户想完成什么
+# Constraints & Preferences
+# Progress
+#   Done / In Progress / Blocked
+# Key Decisions   —— 决策 + 理由
+# Next Steps      —— 有序清单
+# Critical Context —— 精确保留文件路径、函数名、错误信息
 ```
 
 且是**迭代式**的：下一次压缩把上一份摘要作为输入（`UPDATE_SUMMARIZATION_INSTRUCTIONS` 要求"PRESERVE all existing information... UPDATE the Progress section"）。这就是"会话内记忆"的收敛机制。`session_before_compact` 钩子还允许扩展完全接管摘要——记忆提取的最佳时机。
