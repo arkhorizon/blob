@@ -2221,6 +2221,7 @@ mark.searchHL {
   position: absolute;
   top: 18px;
   right: 20px;
+  z-index: 10;
   width: 42px;
   height: 42px;
   display: inline-flex;
@@ -2258,12 +2259,15 @@ mark.searchHL {
 }
 .mermaidFullscreenStage .mermaidCanvas {
   width: 100%;
+  align-items: center;
+  justify-content: center;
 }
 .mermaidFullscreenStage svg {
   display: block;
   max-width: 100%;
   max-height: calc(100vh - 120px);
   height: auto;
+  margin: 0 auto;
 }
 [data-theme='night'] .article .mermaidToolbar {
   background: #3a3430;

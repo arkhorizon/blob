@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { navigate } from "astro:transitions/client";
 import { formatCount, postView, saveProgress } from "../lib/api";
@@ -195,9 +195,9 @@ export default function ReadingView({
 
   const diagramNodes = articleRef.current?.querySelectorAll(".mermaidFig");
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isRestoringRef.current) return;
-    containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+    containerRef.current?.scrollTo(0, 0);
   }, [chapterIdx]);
 
   useEffect(() => {
