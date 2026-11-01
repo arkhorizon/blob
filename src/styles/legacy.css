@@ -6,7 +6,7 @@
   --side-w: 256px;
   --hdr-h: 56px;
   --max-w: 740px;
-  --toc-w: 180px;
+  --toc-w: 220px;
   --list-w: 880px;
 }
 
@@ -1969,6 +1969,37 @@ mark.searchHL {
   border-radius: 3px;
   font-size: 0.875em;
 }
+
+/* Mermaid diagrams are rendered from source on the client. */
+.article .mermaidFig {
+  margin: 1.8em 0;
+  padding: 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--bd2);
+  border-radius: var(--r);
+  box-shadow: var(--sh);
+  overflow-x: auto;
+}
+.article .mermaidFig svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
+}
+.article .mermaidSrc {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--tx3);
+  font-size: 0.8rem;
+}
+.article .mermaidSrc code {
+  padding: 0;
+  background: transparent;
+}
+.article .mermaidFig.error {
+  border-color: #c0393b;
+}
 .article a {
   color: var(--ac);
   text-decoration: none;
@@ -2048,7 +2079,7 @@ mark.searchHL {
 .toc {
   width: var(--toc-w);
   min-width: var(--toc-w);
-  padding-right: 24px;
+  padding-right: 28px;
   position: sticky;
   top: calc(var(--hdr-h) + 28px);
   height: fit-content;
@@ -2063,29 +2094,34 @@ mark.searchHL {
 }
 .toc h4 {
   font-family: var(--font-s);
-  font-size: 0.65rem;
+  font-size: 0.75rem;
   font-weight: 600;
   color: var(--tx4);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 10px;
+  margin-bottom: 14px;
 }
 .tocLnk {
   display: block;
   font-family: var(--font-s);
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   color: var(--tx3);
-  padding: 3px 0 3px 10px;
+  padding: 5px 0 5px 12px;
   border-left: 2px solid var(--bd2);
   cursor: pointer;
   transition: all 0.2s;
   text-decoration: none;
-  line-height: 1.5;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
 }
 .tocLnk:hover {
   color: var(--ac);
   border-left-color: var(--ac);
   background: var(--bg-toc);
+}
+.tocLnk.sub {
+  padding-left: 26px;
+  font-size: 0.78rem;
 }
 
 /* Prev / Next */
@@ -2221,7 +2257,7 @@ mark.searchHL {
     --side-w: 280px;
     --hdr-h: 60px;
     --max-w: 780px;
-    --toc-w: 220px;
+    --toc-w: 250px;
     --list-w: 1060px;
   }
   .grid {
@@ -2241,7 +2277,7 @@ mark.searchHL {
     --side-w: 320px;
     --hdr-h: 66px;
     --max-w: 820px;
-    --toc-w: 250px;
+    --toc-w: 280px;
     --list-w: 1728px;
   }
   html {
@@ -2289,10 +2325,14 @@ mark.searchHL {
     padding-right: 40px;
   }
   .toc h4 {
-    font-size: 0.7rem;
+    font-size: 0.78rem;
   }
   .tocLnk {
-    font-size: 0.75rem;
+    font-size: 0.84rem;
+    padding: 6px 0 6px 14px;
+  }
+  .tocLnk.sub {
+    font-size: 0.8rem;
   }
   .rdTitle {
     font-size: 2.2rem;
@@ -2317,6 +2357,7 @@ mark.searchHL {
     --hdr-h: 72px;
     --max-w: 860px;
     --list-w: 1920px;
+    --toc-w: 320px;
   }
   html {
     font-size: 20px;
@@ -2393,12 +2434,16 @@ mark.searchHL {
     padding-right: 48px;
   }
   .toc h4 {
-    font-size: 0.75rem;
-    margin-bottom: 14px;
+    font-size: 0.82rem;
+    margin-bottom: 16px;
   }
   .tocLnk {
-    font-size: 0.8rem;
-    padding: 4px 0 4px 14px;
+    font-size: 0.9rem;
+    padding: 6px 0 6px 16px;
+  }
+  .tocLnk.sub {
+    padding-left: 30px;
+    font-size: 0.84rem;
   }
   /* rdBack is a 34×34 icon button — no text padding needed */
   .rdTitle {

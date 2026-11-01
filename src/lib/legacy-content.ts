@@ -47,6 +47,17 @@ marked.use({
       }
       return img;
     },
+    code({ text, lang }) {
+      const language = (lang || "").trim().split(/\s+/)[0];
+      if (language !== "mermaid") return false;
+
+      const escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      return `<figure class="mermaidFig" data-mermaid="${encodeURIComponent(text)}"><pre class="mermaidSrc"><code>${escaped}</code></pre></figure>`;
+    },
     table(token) {
       const renderCell = (cell: typeof token.header[number]) => {
         const tag = cell.header ? "th" : "td";

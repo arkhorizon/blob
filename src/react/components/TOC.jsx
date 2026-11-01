@@ -40,12 +40,7 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
         {headings.map((h) => (
           <a
             key={h.id}
-            className="tocLnk"
-            style={
-              h.level === 'H3'
-                ? { paddingLeft: 20, fontSize: '0.65rem' }
-                : undefined
-            }
+            className={`tocLnk${h.level === 'H3' ? ' sub' : ''}`}
             onClick={(e) => {
               e.preventDefault();
               handleClick(h.id);

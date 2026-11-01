@@ -16,6 +16,7 @@
     "@lucide/astro": "^1.52.0",
     "astro": "^7.3.6",
     "marked": "^18.1.0",
+    "mermaid": "11.17.2",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },

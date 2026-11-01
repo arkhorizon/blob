@@ -166,6 +166,50 @@ export default function ReadingView({
   }, [chapterIdx, displayContent, essayId]);
 
   useEffect(() => {
+    const element = articleRef.current;
+    if (!element) return;
+
+    const diagrams = Array.from(element.querySelectorAll(".mermaidFig"));
+    if (diagrams.length === 0) return;
+
+    let cancelled = false;
+    const renderDiagrams = async () => {
+      const mermaid = (await import("mermaid")).default;
+      mermaid.initialize({
+        startOnLoad: false,
+        securityLevel: "strict",
+        theme: readingTheme === "night" ? "dark" : "neutral",
+        fontFamily: "'Noto Sans SC', system-ui, sans-serif"
+      });
+      if (cancelled) return;
+
+      for (const [index, diagram] of diagrams.entries()) {
+        const source = decodeURIComponent(diagram.dataset.mermaid || "");
+        if (!source) continue;
+
+        try {
+          const renderId = `mermaid-${Date.now()}-${index}`;
+          const { svg, bindFunctions } = await mermaid.render(renderId, source);
+          if (cancelled) return;
+
+          diagram.classList.remove("error");
+          diagram.innerHTML = svg;
+          bindFunctions?.(diagram);
+        } catch (error) {
+          if (cancelled) return;
+          diagram.classList.add("error");
+          console.error("[mermaid]", error);
+        }
+      }
+    };
+
+    renderDiagrams();
+    return () => {
+      cancelled = true;
+    };
+  }, [chapterIdx, displayContent, essayId, readingTheme]);
+
+  useEffect(() => {
     if (isRestoringRef.current) return;
     containerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
   }, [chapterIdx]);
