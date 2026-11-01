@@ -70,10 +70,10 @@
   --bg-code: #2a2622;
   --bg-bq: #302b27;
   --bg-toc: #3a3430;
-  --tx: #d8cebc;
-  --tx2: #b5a994;
-  --tx3: #8a7e6e;
-  --tx4: #6b6155;
+  --tx: #ededed;
+  --tx2: #c2c2c2;
+  --tx3: #949494;
+  --tx4: #6f6f6f;
   --ac: #d4a04a;
   --ac-h: #c08e38;
   --ac-bg: rgba(212, 160, 74, 0.1);
@@ -1782,7 +1782,7 @@ mark.searchHL {
 [data-theme='night'] .article {
   font-family: var(--font-s);
   font-weight: 400;
-  color: #c9bdaa;
+  color: #f5f5f5;
   letter-spacing: 0.012em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -1974,6 +1974,69 @@ mark.searchHL {
   line-height: 1.6;
   color: var(--tx);
 }
+.article .codeBlock {
+  margin: 1.8em 0;
+  background: var(--bg-code);
+  border: 1px solid var(--bd2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.article .codeLang {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 9px 7px 14px;
+  background: color-mix(in srgb, var(--bg-s) 72%, transparent);
+  border-bottom: 1px solid var(--bd2);
+  color: var(--tx3);
+  font-family: var(--font-s);
+  font-size: 0.75rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  user-select: none;
+}
+.article .codeCopy {
+  border: 0;
+  padding: 4px 8px;
+  background: transparent;
+  color: var(--tx3);
+  font: inherit;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.article .codeCopy:hover,
+.article .codeCopy.copied {
+  color: var(--ac);
+  background: var(--ac-bg);
+}
+.article .codeBlock pre {
+  margin: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.article .codeBlock code {
+  padding: 0;
+  background: transparent;
+  color: inherit;
+}
+[data-theme='night'] .article .codeBlock {
+  background: #332e2a;
+  border-color: #463f35;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+[data-theme='night'] .article .codeLang {
+  background: #3a3430;
+  border-bottom-color: #463f35;
+  color: #a3a3a3;
+}
+[data-theme='night'] .article .codeBlock pre {
+  color: #ededed;
+}
 .article code {
   font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
   background: var(--bg-code);
@@ -1985,32 +2048,214 @@ mark.searchHL {
 /* Mermaid diagrams are rendered from source on the client. */
 .article .mermaidFig {
   margin: 1.8em 0;
-  padding: 16px;
   background: var(--bg-card);
   border: 1px solid var(--bd2);
   border-radius: var(--r);
   box-shadow: var(--sh);
-  overflow-x: auto;
+  overflow: hidden;
 }
-.article .mermaidFig svg {
+.article .mermaidFig > .mermaidSrc {
+  display: none;
+}
+.article .mermaidToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 52px;
+  padding: 9px 12px;
+  background: color-mix(in srgb, var(--bg-s) 72%, transparent);
+  border-bottom: 1px solid var(--bd2);
+}
+.article .mermaidTabs {
+  display: flex;
+  gap: 2px;
+  padding: 3px;
+  background: color-mix(in srgb, var(--bg-h) 52%, transparent);
+  border-radius: 9px;
+}
+.article .mermaidTab {
+  border: 0;
+  background: transparent;
+  color: var(--tx3);
+  font-family: var(--font-s);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1;
+  padding: 7px 15px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.article .mermaidTab:hover,
+.article .mermaidTab.active {
+  color: var(--tx);
+}
+.article .mermaidTab.active {
+  background: var(--bg-card);
+  box-shadow: var(--sh);
+}
+.article .mermaidActions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.article .mermaidAction {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--tx3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.article .mermaidAction svg {
+  width: 19px;
+  height: 19px;
+}
+.article .mermaidAction:hover:not(:disabled),
+.article .mermaidAction:active:not(:disabled) {
+  color: var(--ac);
+  background: var(--ac-bg);
+}
+.article .mermaidAction:disabled {
+  color: var(--tx4);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.article .mermaidDivider {
+  width: 1px;
+  height: 18px;
+  margin: 0 5px;
+  background: var(--bd);
+}
+.article .mermaidStage {
+  min-height: 320px;
+  max-height: min(68vh, 620px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 26px;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--ac) 3%, transparent), transparent 58%),
+    var(--bg-card);
+}
+.article .mermaidStage.code {
+  display: block;
+  max-height: 480px;
+  padding: 0;
+  background: var(--bg-code);
+}
+.article .mermaidCanvas {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.article .mermaidCanvas svg {
   display: block;
   max-width: 100%;
   height: auto;
   margin: 0 auto;
 }
-.article .mermaidSrc {
+.article .mermaidCode,
+.article .mermaidCode code {
   margin: 0;
   padding: 0;
   background: transparent;
+}
+.article .mermaidCode {
+  min-height: 320px;
+  padding: 18px;
+  overflow: auto;
+  color: var(--tx);
+  font-family: 'SF Mono', 'Fira Code', Consolas, monospace;
+  font-size: 0.875rem;
+  line-height: 1.7;
+  white-space: pre;
+}
+.article .mermaidNotice {
+  margin: 0;
   color: var(--tx3);
-  font-size: 0.8rem;
+  font-family: var(--font-s);
+  font-size: 0.875rem;
 }
-.article .mermaidSrc code {
-  padding: 0;
-  background: transparent;
+.article .mermaidNotice.error {
+  color: #c0393b;
 }
-.article .mermaidFig.error {
-  border-color: #c0393b;
+.mermaidFullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  display: flex;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.94);
+  animation: fadeIn 0.2s ease;
+}
+.mermaidClose {
+  position: absolute;
+  top: 18px;
+  right: 20px;
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 50%;
+  background: #3a3734;
+  color: #d8cebc;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.mermaidClose:hover {
+  background: #4a4641;
+  color: #fff;
+}
+.mermaidClose svg {
+  width: 20px;
+  height: 20px;
+}
+.mermaidFullscreenStage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 6vw, 72px);
+  overflow: auto;
+  background: #3a3734;
+  border-radius: 8px;
+}
+.mermaidFullscreenStage .mermaidCanvas {
+  width: 100%;
+}
+.mermaidFullscreenStage svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+[data-theme='night'] .article .mermaidToolbar {
+  background: #3a3430;
+}
+[data-theme='night'] .article .mermaidStage {
+  background:
+    radial-gradient(circle at 50% 0%, rgba(212, 160, 74, 0.045), transparent 58%),
+    #211d1a;
+}
+[data-theme='night'] .article .mermaidStage.code,
+[data-theme='night'] .article .mermaidCode {
+  background: #332e2a;
+}
+[data-theme='night'] .article .mermaidCode {
+  color: #ededed;
 }
 .article a {
   color: var(--ac);

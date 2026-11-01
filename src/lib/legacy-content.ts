@@ -33,6 +33,14 @@ export type LegacyEssay = {
 };
 
 const marked = new Marked();
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 marked.use({
   renderer: {
     hr() {
@@ -49,14 +57,12 @@ marked.use({
     },
     code({ text, lang }) {
       const language = (lang || "").trim().split(/\s+/)[0];
-      if (language !== "mermaid") return false;
+      if (language !== "mermaid") {
+        const safeLanguage = /^[a-zA-Z0-9_-]+$/.test(language) ? language : "text";
+        return `<figure class="codeBlock"><figcaption class="codeLang"><span>${escapeHtml(language || "代码")}</span><button type="button" class="codeCopy">复制</button></figcaption><pre><code class="language-${safeLanguage}">${escapeHtml(text)}</code></pre></figure>`;
+      }
 
-      const escaped = text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-
-      return `<figure class="mermaidFig" data-mermaid="${encodeURIComponent(text)}"><pre class="mermaidSrc"><code>${escaped}</code></pre></figure>`;
+      return `<figure class="mermaidFig" data-mermaid="${encodeURIComponent(text)}"><pre class="mermaidSrc"><code>${escapeHtml(text)}</code></pre></figure>`;
     },
     table(token) {
       const renderCell = (cell: typeof token.header[number]) => {

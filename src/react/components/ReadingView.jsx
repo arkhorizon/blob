@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { navigate } from "astro:transitions/client";
 import { formatCount, postView, saveProgress } from "../lib/api";
 import BackToTop from "./BackToTop";
 import GiscusComments from "./GiscusComments";
 import ImageLightbox from "./ImageLightbox";
+import MermaidDiagram from "./MermaidDiagram";
 import ProgressBar from "./ProgressBar";
 import SiteFooter from "./SiteFooter";
 import TOC from "./TOC";
@@ -67,6 +69,7 @@ export default function ReadingView({
   const [lightbox, setLightbox] = useState({ src: null, alt: null });
   const [viewCount, setViewCount] = useState(null);
   const [titleTooltip, setTitleTooltip] = useState(null);
+  const [diagramSources, setDiagramSources] = useState([]);
 
   const readingTheme = theme || "oriental";
   const chapters = contentData?.chapters ?? [];
@@ -157,6 +160,23 @@ export default function ReadingView({
     if (!element) return;
 
     const handleClick = (event) => {
+      const copyButton = event.target.closest(".codeCopy");
+      if (copyButton) {
+        const code = copyButton.closest(".codeBlock")?.querySelector("pre code");
+        if (!code) return;
+
+        const originalText = copyButton.textContent;
+        navigator.clipboard.writeText(code.textContent || "").then(() => {
+          copyButton.textContent = "已复制";
+          copyButton.classList.add("copied");
+          setTimeout(() => {
+            copyButton.textContent = originalText;
+            copyButton.classList.remove("copied");
+          }, 1200);
+        }).catch(() => {});
+        return;
+      }
+
       const image = event.target.closest("img");
       if (!image) return;
       setLightbox({ src: image.src, alt: image.alt || "" });
@@ -170,44 +190,10 @@ export default function ReadingView({
     if (!element) return;
 
     const diagrams = Array.from(element.querySelectorAll(".mermaidFig"));
-    if (diagrams.length === 0) return;
+    setDiagramSources(diagrams.map((diagram) => decodeURIComponent(diagram.dataset.mermaid || "")));
+  }, [chapterIdx, displayContent, essayId]);
 
-    let cancelled = false;
-    const renderDiagrams = async () => {
-      const mermaid = (await import("mermaid")).default;
-      mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: "strict",
-        theme: readingTheme === "night" ? "dark" : "neutral",
-        fontFamily: "'Noto Sans SC', system-ui, sans-serif"
-      });
-      if (cancelled) return;
-
-      for (const [index, diagram] of diagrams.entries()) {
-        const source = decodeURIComponent(diagram.dataset.mermaid || "");
-        if (!source) continue;
-
-        try {
-          const renderId = `mermaid-${Date.now()}-${index}`;
-          const { svg, bindFunctions } = await mermaid.render(renderId, source);
-          if (cancelled) return;
-
-          diagram.classList.remove("error");
-          diagram.innerHTML = svg;
-          bindFunctions?.(diagram);
-        } catch (error) {
-          if (cancelled) return;
-          diagram.classList.add("error");
-          console.error("[mermaid]", error);
-        }
-      }
-    };
-
-    renderDiagrams();
-    return () => {
-      cancelled = true;
-    };
-  }, [chapterIdx, displayContent, essayId, readingTheme]);
+  const diagramNodes = articleRef.current?.querySelectorAll(".mermaidFig");
 
   useEffect(() => {
     if (isRestoringRef.current) return;
@@ -535,6 +521,19 @@ export default function ReadingView({
             className={`article ${FONT_LEVELS[fontLevel].cls}`}
             dangerouslySetInnerHTML={{ __html: displayContent }}
           />
+          {diagramSources.map((source, index) => {
+            const target = diagramNodes?.[index];
+            return target && source
+              ? createPortal(
+                  <MermaidDiagram
+                    source={source}
+                    index={index}
+                    theme={readingTheme}
+                  />,
+                  target
+                )
+              : null;
+          })}
           {renderNav()}
           <GiscusComments config={giscus} theme={readingTheme} />
           <SiteFooter />
