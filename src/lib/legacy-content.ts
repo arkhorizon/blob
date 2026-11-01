@@ -46,6 +46,19 @@ marked.use({
         return `<figure class="illust">${img}<figcaption>${alt}</figcaption></figure>`;
       }
       return img;
+    },
+    table(token) {
+      const renderCell = (cell: typeof token.header[number]) => {
+        const tag = cell.header ? "th" : "td";
+        const align = cell.align ? ` class="align-${cell.align}"` : "";
+        return `<${tag}${align}>${this.parser.parseInline(cell.tokens)}</${tag}>`;
+      };
+      const header = `<tr>${token.header.map(renderCell).join("")}</tr>`;
+      const body = token.rows
+        .map((row) => `<tr>${row.map(renderCell).join("")}</tr>`)
+        .join("");
+
+      return `<div class="articleTableWrap"><table><thead>${header}</thead><tbody>${body}</tbody></table></div>`;
     }
   }
 });
