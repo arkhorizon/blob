@@ -1,8 +1,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
-const MIN_ZOOM = 0.4;
-const MAX_ZOOM = 3;
+const MIN_ZOOM = 1;
+const MAX_ZOOM = 4;
+const INITIAL_TRANSFORM = { scale: 1, x: 0, y: 0 };
 
 const icons = {
   minus: (
@@ -15,13 +16,6 @@ const icons = {
     <>
       <circle cx="12" cy="12" r="9" />
       <path d="M12 8v8M8 12h8" />
-    </>
-  ),
-  download: (
-    <>
-      <path d="M12 3v12" />
-      <path d="m7 10 5 5 5-5" />
-      <path d="M4 20h16" />
     </>
   ),
   expand: (
@@ -57,16 +51,53 @@ function ActionButton({ label, onClick, disabled, children }) {
   );
 }
 
+function clampZoom(scale, minZoom = MIN_ZOOM) {
+  return Math.min(MAX_ZOOM, Math.max(minZoom, scale));
+}
+
+function clampPan(transform, canvas) {
+  if (!canvas || transform.scale <= MIN_ZOOM) return INITIAL_TRANSFORM;
+
+  const maxX = (canvas.offsetWidth * (transform.scale - 1)) / 2;
+  const maxY = (canvas.offsetHeight * (transform.scale - 1)) / 2;
+  return {
+    scale: transform.scale,
+    x: Math.min(maxX, Math.max(-maxX, transform.x)),
+    y: Math.min(maxY, Math.max(-maxY, transform.y))
+  };
+}
+
+function zoomAtPoint(current, stage, clientX, clientY, deltaY) {
+  const rect = stage.getBoundingClientRect();
+  const nextScale = clampZoom(current.scale * (deltaY < 0 ? 1.12 : 0.89));
+  if (nextScale <= MIN_ZOOM) return INITIAL_TRANSFORM;
+
+  const ratio = nextScale / current.scale;
+  const offsetX = clientX - rect.left - rect.width / 2;
+  const offsetY = clientY - rect.top - rect.height / 2;
+
+  return clampPan({
+    scale: nextScale,
+    x: offsetX * (1 - ratio) + current.x * ratio,
+    y: offsetY * (1 - ratio) + current.y * ratio
+  }, stage.querySelector(".mermaidCanvas"));
+}
+
 export default function MermaidDiagram({ source, index, theme }) {
   const rawId = useId();
   const diagramId = `mermaid-${rawId.replace(/[^a-zA-Z0-9]/g, "")}-${index}`;
   const chartRef = useRef(null);
+  const previewStageRef = useRef(null);
   const fullscreenChartRef = useRef(null);
+  const fullscreenStageRef = useRef(null);
+  const dragStateRef = useRef(null);
   const [view, setView] = useState("chart");
-  const [zoom, setZoom] = useState(1);
+  const [previewTransform, setPreviewTransform] = useState(INITIAL_TRANSFORM);
+  const [fullscreenTransform, setFullscreenTransform] = useState(INITIAL_TRANSFORM);
   const [chart, setChart] = useState("");
   const [status, setStatus] = useState("loading");
   const [fullscreen, setFullscreen] = useState(false);
+  const [dragging, setDragging] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -106,6 +137,13 @@ export default function MermaidDiagram({ source, index, theme }) {
   }, [chart]);
 
   useEffect(() => {
+    if (status === "ready") {
+      setPreviewTransform(INITIAL_TRANSFORM);
+      setFullscreenTransform(INITIAL_TRANSFORM);
+    }
+  }, [status]);
+
+  useEffect(() => {
     if (!fullscreen) return;
     if (fullscreenChartRef.current) {
       fullscreenChartRef.current.innerHTML = chartRef.current?.innerHTML || "";
@@ -119,27 +157,74 @@ export default function MermaidDiagram({ source, index, theme }) {
   }, [chart, fullscreen]);
 
   useEffect(() => {
-    for (const element of [chartRef.current, fullscreenChartRef.current]) {
-      const svg = element?.querySelector("svg");
-      if (!svg) continue;
-      svg.style.width = `${zoom * 100}%`;
-      svg.style.maxWidth = zoom > 1 ? "none" : "100%";
-      svg.style.height = "auto";
-    }
-  }, [chart, fullscreen, zoom]);
+    if (!chartRef.current) return;
+    chartRef.current.style.transform = `translate3d(${previewTransform.x}px, ${previewTransform.y}px, 0) scale(${previewTransform.scale})`;
+  }, [chart, previewTransform]);
 
-  const download = () => {
-    const svg = chartRef.current?.querySelector("svg");
-    if (!svg) return;
-    const blob = new Blob([`<?xml version="1.0" encoding="UTF-8"?>\n${svg.outerHTML}`], {
-      type: "image/svg+xml;charset=utf-8"
+  useEffect(() => {
+    if (!fullscreenChartRef.current) return;
+    fullscreenChartRef.current.style.transform = `translate3d(${fullscreenTransform.x}px, ${fullscreenTransform.y}px, 0) scale(${fullscreenTransform.scale})`;
+  }, [chart, fullscreen, fullscreenTransform]);
+
+  useEffect(() => {
+    const stages = [previewStageRef.current, fullscreenStageRef.current].filter(Boolean);
+    if (stages.length === 0 || view !== "chart" || status !== "ready") return;
+
+    const handleWheel = (event) => {
+      event.preventDefault();
+      const stage = event.currentTarget;
+      const isPreview = stage === previewStageRef.current;
+      const update = isPreview ? setPreviewTransform : setFullscreenTransform;
+      update((current) => zoomAtPoint(current, stage, event.clientX, event.clientY, event.deltaY));
+    };
+
+    stages.forEach((stage) => stage.addEventListener("wheel", handleWheel, { passive: false }));
+    return () => {
+      stages.forEach((stage) => stage.removeEventListener("wheel", handleWheel));
+    };
+  }, [fullscreen, status, view]);
+
+  const startDrag = (event) => {
+    const target = fullscreen ? "fullscreen" : "preview";
+    if (event.button !== 0 || view !== "chart" || status !== "ready") return;
+    const transform = target === "fullscreen" ? fullscreenTransform : previewTransform;
+    if (transform.scale <= MIN_ZOOM) return;
+
+    event.currentTarget.setPointerCapture(event.pointerId);
+    dragStateRef.current = {
+      pointerId: event.pointerId,
+      target,
+      clientX: event.clientX,
+      clientY: event.clientY,
+      transform: target === "fullscreen" ? fullscreenTransform : previewTransform
+    };
+    setDragging(true);
+  };
+
+  const moveDrag = (event) => {
+    const state = dragStateRef.current;
+    if (!state || state.pointerId !== event.pointerId) return;
+    const update = state.target === "fullscreen" ? setFullscreenTransform : setPreviewTransform;
+    const stage = state.target === "fullscreen" ? fullscreenStageRef.current : previewStageRef.current;
+    update(clampPan({
+      scale: state.transform.scale,
+      x: state.transform.x + event.clientX - state.clientX,
+      y: state.transform.y + event.clientY - state.clientY
+    }, stage?.querySelector(".mermaidCanvas")));
+  };
+
+  const endDrag = (event) => {
+    if (dragStateRef.current?.pointerId === event.pointerId) {
+      dragStateRef.current = null;
+      setDragging(false);
+    }
+  };
+
+  const zoomBy = (factor) => {
+    setPreviewTransform((current) => {
+      const nextScale = clampZoom(current.scale * factor);
+      return nextScale <= MIN_ZOOM ? INITIAL_TRANSFORM : clampPan({ ...current, scale: nextScale }, chartRef.current);
     });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `mermaid-${diagramId}.svg`;
-    link.click();
-    URL.revokeObjectURL(url);
   };
 
   return (
@@ -167,23 +252,30 @@ export default function MermaidDiagram({ source, index, theme }) {
         </div>
 
         <div className="mermaidActions">
-          <ActionButton label="缩小" disabled={zoom <= MIN_ZOOM} onClick={() => setZoom((value) => Math.max(MIN_ZOOM, value - 0.2))}>
+          <ActionButton label="缩小" disabled={previewTransform.scale <= MIN_ZOOM} onClick={() => zoomBy(0.8)}>
             {icons.minus}
           </ActionButton>
-          <ActionButton label="放大" disabled={zoom >= MAX_ZOOM} onClick={() => setZoom((value) => Math.min(MAX_ZOOM, value + 0.2))}>
+          <ActionButton label="放大" disabled={previewTransform.scale >= MAX_ZOOM} onClick={() => zoomBy(1.25)}>
             {icons.plus}
           </ActionButton>
           <span className="mermaidDivider" aria-hidden="true" />
-          <ActionButton label="下载图表" onClick={download}>
-            {icons.download}
-          </ActionButton>
-          <ActionButton label="全屏查看" onClick={() => setFullscreen(true)}>
+          <ActionButton label="全屏查看" onClick={() => {
+            setFullscreenTransform(INITIAL_TRANSFORM);
+            setFullscreen(true);
+          }}>
             {icons.expand}
           </ActionButton>
         </div>
       </div>
 
-      <div className={`mermaidStage${view === "code" ? " code" : ""}`}>
+      <div
+        ref={previewStageRef}
+        className={`mermaidStage${view === "code" ? " code" : ""}${previewTransform.scale > 1 ? " pannable" : ""}${dragging ? " dragging" : ""}`}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+      >
         {view === "chart" ? (
           status === "ready" ? (
             <div ref={chartRef} className="mermaidCanvas" />
@@ -211,7 +303,15 @@ export default function MermaidDiagram({ source, index, theme }) {
                 {icons.close}
               </svg>
             </button>
-            <div className="mermaidFullscreenStage" onClick={(event) => event.stopPropagation()}>
+            <div
+              ref={fullscreenStageRef}
+              className={`mermaidFullscreenStage${fullscreenTransform.scale > 1 ? " pannable" : ""}${dragging ? " dragging" : ""}`}
+              onClick={(event) => event.stopPropagation()}
+              onPointerDown={startDrag}
+              onPointerMove={moveDrag}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+            >
               <div ref={fullscreenChartRef} className="mermaidCanvas" />
             </div>
           </div>,

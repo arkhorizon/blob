@@ -1987,13 +1987,15 @@ mark.searchHL {
   justify-content: space-between;
   gap: 12px;
   padding: 7px 9px 7px 14px;
-  background: color-mix(in srgb, var(--bg-s) 72%, transparent);
+  margin: 0;
+  background: var(--bg-code);
   border-bottom: 1px solid var(--bd2);
   color: var(--tx3);
   font-family: var(--font-s);
   font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: 0.08em;
+  font-style: normal;
   user-select: none;
 }
 .article .codeCopy {
@@ -2030,8 +2032,6 @@ mark.searchHL {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 [data-theme='night'] .article .codeLang {
-  background: #3a3430;
-  border-bottom-color: #463f35;
   color: #a3a3a3;
 }
 [data-theme='night'] .article .codeBlock pre {
@@ -2144,10 +2144,14 @@ mark.searchHL {
   align-items: center;
   justify-content: center;
   padding: 26px;
-  overflow: auto;
+  overflow: hidden;
   background:
     radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--ac) 3%, transparent), transparent 58%),
     var(--bg-card);
+}
+.article .mermaidStage.pannable,
+.mermaidFullscreenStage.pannable {
+  cursor: grab;
 }
 .article .mermaidStage.code {
   display: block;
@@ -2159,12 +2163,25 @@ mark.searchHL {
   width: 100%;
   display: flex;
   justify-content: center;
+  transform: translate3d(0, 0, 0) scale(1);
+  transform-origin: center;
+  transition: transform 0.18s ease-out;
+  will-change: transform;
 }
 .article .mermaidCanvas svg {
   display: block;
   max-width: 100%;
+  max-height: min(58vh, 520px);
   height: auto;
   margin: 0 auto;
+}
+.article .mermaidStage.dragging,
+.mermaidFullscreenStage.dragging {
+  cursor: grabbing;
+}
+.article .mermaidStage.dragging .mermaidCanvas,
+.mermaidFullscreenStage.dragging .mermaidCanvas {
+  transition: none;
 }
 .article .mermaidCode,
 .article .mermaidCode code {
@@ -2197,7 +2214,7 @@ mark.searchHL {
   z-index: 4000;
   display: flex;
   padding: 24px;
-  background: rgba(0, 0, 0, 0.94);
+  background: color-mix(in srgb, var(--bg) 88%, black);
   animation: fadeIn 0.2s ease;
 }
 .mermaidClose {
@@ -2211,14 +2228,16 @@ mark.searchHL {
   justify-content: center;
   border: 0;
   border-radius: 50%;
-  background: #3a3734;
-  color: #d8cebc;
+  background: var(--bg-s);
+  color: var(--tx2);
+  border: 1px solid var(--bd2);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
 }
 .mermaidClose:hover {
-  background: #4a4641;
-  color: #fff;
+  background: var(--bg-h);
+  color: var(--ac);
+  border-color: var(--ac);
 }
 .mermaidClose svg {
   width: 20px;
@@ -2230,9 +2249,12 @@ mark.searchHL {
   align-items: center;
   justify-content: center;
   padding: clamp(20px, 6vw, 72px);
-  overflow: auto;
-  background: #3a3734;
+  overflow: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--bd2);
+  box-shadow: var(--sh-h);
   border-radius: 8px;
+  touch-action: none;
 }
 .mermaidFullscreenStage .mermaidCanvas {
   width: 100%;
@@ -2240,6 +2262,7 @@ mark.searchHL {
 .mermaidFullscreenStage svg {
   display: block;
   max-width: 100%;
+  max-height: calc(100vh - 120px);
   height: auto;
 }
 [data-theme='night'] .article .mermaidToolbar {
