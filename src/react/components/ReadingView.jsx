@@ -350,11 +350,12 @@ export default function ReadingView({
                 </svg>
               </button>
               <div className={`rdStickyTitle${topScrolled ? " vis" : ""}`}>
-                <span className="rdStickyTitleText">{essay.title}</span>
+                <span className="rdStickyTitleText" title={essay.title}>{essay.title}</span>
                 {hasChapters && currentChapter && (
-                  <span className="rdStickyChapter"> · {currentChapter.title}</span>
+                  <span className="rdStickyChapter" title={currentChapter.title}>
+                    · {currentChapter.title}
+                  </span>
                 )}
-                {hasChapters && <span className="rdChLabel">{chapterLabel}</span>}
               </div>
             </div>
             <div className="rdTopR">
@@ -419,7 +420,7 @@ export default function ReadingView({
             </div>
           </div>
 
-          {essay.cover && (
+          {essay.cover && chapterIdx === 0 && (
             <div className="rdCover" onClick={() => setLightbox({ src: essay.cover, alt: essay.title })}>
               <img src={essay.cover} alt={essay.title} />
             </div>
@@ -427,7 +428,10 @@ export default function ReadingView({
 
           {hasChapters && (
             <div className="rdChapterBar">
-              <span className="rdChapterTitle">{currentChapter?.title || ""}</span>
+              <div className="rdChapterHeading">
+                <span className="rdChapterEyebrow">章节 {chapterLabel}</span>
+                <h2 className="rdChapterTitle">{currentChapter?.title || ""}</h2>
+              </div>
               <div className="rdChapterPills">
                 {buildChapterPills().map((item, index) =>
                   item.type === "dots" ? (
