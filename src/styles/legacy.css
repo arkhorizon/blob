@@ -1360,6 +1360,44 @@ mark.searchHL {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.rdTitleTooltip {
+  position: fixed;
+  z-index: 1002;
+  padding: 9px 14px;
+  background: var(--tx);
+  color: var(--bg);
+  border-radius: 6px;
+  box-shadow: var(--sh-h);
+  font-family: var(--font-s);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  transform: translateX(-50%);
+  animation: rdTooltipIn 0.12s ease-out;
+}
+.rdTitleTooltip::after {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: var(--arrow-left, 50%);
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-bottom-color: var(--tx);
+  border-top-width: 0;
+}
+@keyframes rdTooltipIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
 .rdTopR {
   display: flex;
   align-items: center;
@@ -1576,13 +1614,6 @@ mark.searchHL {
   font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--ac);
-}
-.rdChapterEyebrow::after {
-  content: '';
-  width: 32px;
-  height: 1px;
-  background: currentColor;
-  opacity: 0.45;
 }
 .rdChapterTitle {
   font-family: var(--font);

@@ -66,6 +66,7 @@ export default function ReadingView({
   const [fontToast, setFontToast] = useState(false);
   const [lightbox, setLightbox] = useState({ src: null, alt: null });
   const [viewCount, setViewCount] = useState(null);
+  const [titleTooltip, setTitleTooltip] = useState(null);
 
   const readingTheme = theme || "oriental";
   const chapters = contentData?.chapters ?? [];
@@ -98,6 +99,24 @@ export default function ReadingView({
     progressReadyRef.current = true;
     isRestoringRef.current = false;
   }, []);
+
+  const showTitleTooltip = useCallback((event) => {
+    const element = event.currentTarget;
+    if (element.scrollWidth <= element.clientWidth + 1) return;
+
+    const rect = element.getBoundingClientRect();
+    const width = Math.min(340, window.innerWidth - 24);
+    const center = rect.left + rect.width / 2;
+    const left = Math.min(
+      Math.max(center, 12 + width / 2),
+      window.innerWidth - 12 - width / 2
+    );
+    const text = element.dataset.fullTitle || element.textContent || "";
+
+    setTitleTooltip({ text, left, arrowLeft: center - left, top: rect.bottom + 9, width });
+  }, []);
+
+  const hideTitleTooltip = useCallback(() => setTitleTooltip(null), []);
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -181,6 +200,7 @@ export default function ReadingView({
         setTopScrolled(scrollTop > 80);
         setShowBackTop(scrollTop > 400 && scrollTop < distance - 40);
         setReadingProgress(ratio);
+        setTitleTooltip(null);
 
         const now = Date.now();
         if (progressReadyRef.current && now - lastSaveRef.current >= 2000) {
@@ -197,6 +217,10 @@ export default function ReadingView({
       cancelAnimationFrame(raf);
     };
   }, [essayId]);
+
+  useEffect(() => {
+    setTitleTooltip(null);
+  }, [chapterIdx, essayId]);
 
   useEffect(() => {
     const flush = () => {
@@ -350,9 +374,21 @@ export default function ReadingView({
                 </svg>
               </button>
               <div className={`rdStickyTitle${topScrolled ? " vis" : ""}`}>
-                <span className="rdStickyTitleText" title={essay.title}>{essay.title}</span>
+                <span
+                  className="rdStickyTitleText"
+                  data-full-title={essay.title}
+                  onMouseEnter={showTitleTooltip}
+                  onMouseLeave={hideTitleTooltip}
+                >
+                  {essay.title}
+                </span>
                 {hasChapters && currentChapter && (
-                  <span className="rdStickyChapter" title={currentChapter.title}>
+                  <span
+                    className="rdStickyChapter"
+                    data-full-title={currentChapter.title}
+                    onMouseEnter={showTitleTooltip}
+                    onMouseLeave={hideTitleTooltip}
+                  >
                     · {currentChapter.title}
                   </span>
                 )}
@@ -429,7 +465,7 @@ export default function ReadingView({
           {hasChapters && (
             <div className="rdChapterBar">
               <div className="rdChapterHeading">
-                <span className="rdChapterEyebrow">章节 {chapterLabel}</span>
+                <span className="rdChapterEyebrow">—— {chapterLabel} ——</span>
                 <h2 className="rdChapterTitle">{currentChapter?.title || ""}</h2>
               </div>
               <div className="rdChapterPills">
@@ -466,6 +502,20 @@ export default function ReadingView({
           alt={lightbox.alt}
           onClose={() => setLightbox({ src: null, alt: null })}
         />
+      )}
+      {titleTooltip && (
+        <div
+          className="rdTitleTooltip"
+          role="tooltip"
+          style={{
+            left: `${titleTooltip.left}px`,
+            "--arrow-left": `${titleTooltip.arrowLeft}px`,
+            top: `${titleTooltip.top}px`,
+            width: `${titleTooltip.width}px`
+          }}
+        >
+          {titleTooltip.text}
+        </div>
       )}
     </div>
   );
