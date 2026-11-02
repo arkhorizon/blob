@@ -134,7 +134,7 @@ export default function MermaidDiagram({ source, index, theme }) {
 
   useEffect(() => {
     if (chartRef.current && chart) chartRef.current.innerHTML = chart;
-  }, [chart]);
+  }, [chart, view]);
 
   useEffect(() => {
     if (status === "ready") {
@@ -159,7 +159,7 @@ export default function MermaidDiagram({ source, index, theme }) {
   useEffect(() => {
     if (!chartRef.current) return;
     chartRef.current.style.transform = `translate3d(${previewTransform.x}px, ${previewTransform.y}px, 0) scale(${previewTransform.scale})`;
-  }, [chart, previewTransform]);
+  }, [chart, previewTransform, view]);
 
   useEffect(() => {
     if (!fullscreenChartRef.current) return;
