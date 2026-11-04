@@ -5,7 +5,7 @@
   --t: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   --side-w: 256px;
   --hdr-h: 56px;
-  --max-w: 740px;
+  --max-w: 800px;
   --toc-w: 220px;
   --list-w: 880px;
 }
@@ -2540,7 +2540,7 @@ mark.searchHL {
   :root {
     --side-w: 280px;
     --hdr-h: 60px;
-    --max-w: 780px;
+    --max-w: 840px;
     --toc-w: 250px;
     --list-w: 1060px;
   }
@@ -2560,7 +2560,7 @@ mark.searchHL {
   :root {
     --side-w: 320px;
     --hdr-h: 66px;
-    --max-w: 820px;
+    --max-w: 880px;
     --toc-w: 280px;
     --list-w: 1728px;
   }
@@ -2639,7 +2639,7 @@ mark.searchHL {
   :root {
     --side-w: 360px;
     --hdr-h: 72px;
-    --max-w: 860px;
+    --max-w: 920px;
     --list-w: 1920px;
     --toc-w: 320px;
   }
