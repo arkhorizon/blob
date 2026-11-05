@@ -5,7 +5,7 @@
   --t: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   --side-w: 256px;
   --hdr-h: 56px;
-  --max-w: 800px;
+  --max-w: 860px;
   --toc-w: 220px;
   --list-w: 880px;
 }
@@ -2540,7 +2540,7 @@ mark.searchHL {
   :root {
     --side-w: 280px;
     --hdr-h: 60px;
-    --max-w: 840px;
+    --max-w: 900px;
     --toc-w: 250px;
     --list-w: 1060px;
   }
@@ -2560,7 +2560,7 @@ mark.searchHL {
   :root {
     --side-w: 320px;
     --hdr-h: 66px;
-    --max-w: 880px;
+    --max-w: 940px;
     --toc-w: 280px;
     --list-w: 1728px;
   }
@@ -2639,7 +2639,7 @@ mark.searchHL {
   :root {
     --side-w: 360px;
     --hdr-h: 72px;
-    --max-w: 920px;
+    --max-w: 980px;
     --list-w: 1920px;
     --toc-w: 320px;
   }
@@ -3564,6 +3564,59 @@ mark.searchHL {
   font-family: var(--font-s);
   font-size: 0.8rem;
   padding: 12px 0;
+}
+
+/* ═══════════════════════════════════════════
+   ROUTE LOADER
+   ═══════════════════════════════════════════ */
+.routeLoader {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: routeLoaderIn 0.18s ease both;
+}
+.routeLoaderDots {
+  display: flex;
+  gap: 8px;
+}
+.routeLoaderDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ac);
+  animation: routeLoaderPulse 0.9s ease-in-out infinite;
+}
+.routeLoaderDot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.routeLoaderDot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+@keyframes routeLoaderIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes routeLoaderPulse {
+  0%, 100% {
+    opacity: 0.25;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+/* Card press feedback for touch */
+.card.cardPressing {
+  transform: scale(0.985);
+  transition: transform 0.12s ease;
 }
 
 @media (prefers-reduced-motion: reduce) {

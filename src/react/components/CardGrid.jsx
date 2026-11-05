@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { formatCount } from '../lib/api';
 
 function escapeRegExp(value) {
@@ -29,6 +29,43 @@ function matchesHighlightTerm(text, terms) {
 }
 
 export default function CardGrid({ essays, onSelectEssay, onTagClick, highlightTerms = [], viewsMap, animate = true }) {
+  const pressingRef = useRef(null);
+
+  const handleCardTouchEnd = useCallback((event, id) => {
+    if (event.target.closest('.cardTag')) return;
+    if (event.changedTouches.length !== 1) return;
+    event.preventDefault();
+    onSelectEssay(id);
+  }, [onSelectEssay]);
+
+  const handleCardTouchStart = useCallback((event) => {
+    if (event.target.closest('.cardTag')) return;
+    const card = event.currentTarget;
+    pressingRef.current = card;
+    card.classList.add('cardPressing');
+  }, []);
+
+  const handleCardTouchCancel = useCallback(() => {
+    if (pressingRef.current) {
+      pressingRef.current.classList.remove('cardPressing');
+      pressingRef.current = null;
+    }
+  }, []);
+
+  const handleCardTouchMove = useCallback((event) => {
+    if (pressingRef.current && event.cancelable) {
+      pressingRef.current.classList.remove('cardPressing');
+      pressingRef.current = null;
+    }
+  }, []);
+
+  const handleCardTouchEndVisual = useCallback(() => {
+    if (pressingRef.current) {
+      pressingRef.current.classList.remove('cardPressing');
+      pressingRef.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     for (const essay of essays.slice(0, 6)) {
       if (!essay.cover) continue;
@@ -56,6 +93,13 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, highlightT
             className={animate ? "card" : "card noEntry"}
             style={animate ? { animationDelay: `${i * 0.06}s` } : undefined}
             onClick={() => onSelectEssay(e.id)}
+            onTouchStart={handleCardTouchStart}
+            onTouchEnd={(ev) => {
+              handleCardTouchEndVisual();
+              handleCardTouchEnd(ev, e.id);
+            }}
+            onTouchCancel={handleCardTouchCancel}
+            onTouchMove={handleCardTouchMove}
           >
             <div className="cardImgW">
               {e.cover ? (

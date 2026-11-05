@@ -52,6 +52,18 @@ function navigateToEssay(id) {
   navigate(`/articles/${encodeURIComponent(id)}`);
 }
 
+function RouteLoader() {
+  return (
+    <div className="routeLoader" aria-hidden="true">
+      <div className="routeLoaderDots">
+        <span className="routeLoaderDot" />
+        <span className="routeLoaderDot" />
+        <span className="routeLoaderDot" />
+      </div>
+    </div>
+  );
+}
+
 export default function ListApp({ index: initialIndex }) {
   const isMobile = useIsMobile();
   const [theme, setTheme] = useState(getInitialTheme);
@@ -64,6 +76,7 @@ export default function ListApp({ index: initialIndex }) {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [viewsMap, setViewsMap] = useState({});
   const [entered, setEntered] = useState(false);
+  const [navigating, setNavigating] = useState(false);
   const restoreNavigationState = useCallback(() => {
     const state = window.history.state;
     if (!state?.listState || state.listScrollY == null) return;
@@ -203,6 +216,17 @@ export default function ListApp({ index: initialIndex }) {
     setActiveTags(new Set());
   }, []);
 
+  const handleSelectEssay = useCallback((id) => {
+    setNavigating(true);
+    navigateToEssay(id);
+  }, []);
+
+  useEffect(() => {
+    if (!navigating) return;
+    const timer = setTimeout(() => setNavigating(false), 2000);
+    return () => clearTimeout(timer);
+  }, [navigating]);
+
   const handleToggleCategory = useCallback(
     (category) => {
       setActiveCategory((current) => (current === category ? null : category));
@@ -313,7 +337,7 @@ export default function ListApp({ index: initialIndex }) {
             showClear={headerInfo.showClear}
             onClear={handleReset}
             essays={filteredEssays}
-            onSelectEssay={navigateToEssay}
+            onSelectEssay={handleSelectEssay}
             activeTags={activeTags}
             onRemoveTag={(tag) =>
               setActiveTags((current) => {
@@ -336,12 +360,13 @@ export default function ListApp({ index: initialIndex }) {
         searchQuery={searchQuery}
         onSearch={handleSearch}
         onSelectTag={handleSelectTag}
-        onSelectEssay={navigateToEssay}
+        onSelectEssay={handleSelectEssay}
         onClose={() => setMobileSearchOpen(false)}
         allTags={allTags}
         allEssays={essays}
         essayOrder={essayOrder}
       />
+      {navigating && <RouteLoader />}
     </ErrorBoundary>
   );
 }
