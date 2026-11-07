@@ -12,19 +12,11 @@ cover: https://img.arkblob.ccwu.cc/articles/deepseek-superagent/cover-v2.jpg
 draft: false
 ---
 
-> 这是写给团队的一份周会分享。背景：我们的 agent OS SDK 已经提供了 agent loop、自定义工具、技能、hook、session、trace log 这套生态，底层是 goclaw。最近 DeepSeek 开源了 Super-agent 的设计文章和原型，本文不是评测"要不要换框架"，而是把其中值得纳入我们架构雷达的设计思想摆到桌面上。
+> 这是写给团队的一份周会分享。背景：我们的 agent OS SDK 已经提供了 agent loop、自定义工具、技能、hook、session、trace log 这套生态，底层是 goclaw。最近 DeepSeek 开源了 Super-agent 的设计文章和原型，值得仔细读一读。
+
+先说清楚：Super-agent 不是新框架——开源的 `dsh-superagent-prototype` 是 DeepSeek Harness 之上的一个插件，示范的是"常驻 Agent 如何组织"这套架构模式；且开源原型不等于内部版本（README 原话），部分设计是未来方向。所以本文不是评测"要不要换框架"，而是把其中值得纳入我们架构雷达的设计思想摆到桌面上。
 
 ![图：A鼠讲师讲解 Super-agent——黑板上是 Router 与三个 Worker 的架构草图，铃铛代表事件驱动，小狗代表 Watchdog](https://img.arkblob.ccwu.cc/articles/deepseek-superagent/cover-v2.jpg)
-
-## 先说清楚：这是架构模式，不是新框架
-
-花一分钟把三个事实钉死，避免讨论跑偏：
-
-1. **Super-agent 不是框架，是架构模式**。官方开源的 `dsh-superagent-prototype` 是 DeepSeek Harness 之上的一个插件，Demonstration 的是"常驻 Agent 如何组织"这套模式。它依赖 Harness 的会话、预设、收件箱机制，脱离 Harness 跑不起来——所以它不是一个我们要"迁移到"的东西，而是拿来对照的镜子。
-2. **开源原型 ≠ 内部版本**。README 原话：与内部实现及设计文章描述不完全一致，部分设计是未来方向。引用实验数据时要带上这个限定。
-3. **研究代码，工程粗糙度真实存在**。官方自己说"大量工程由 coding agents 完成"。值得学的是设计，不是代码本身。
-
-本文的素材：设计文章《Super-agent 设计探索：迈向更自主的 Agent 系统》（2026-10-31 公众号）、原型仓库的 9 篇编号设计文档与源码。
 
 ## 一、问题定义：注意力是唯一的标尺
 
