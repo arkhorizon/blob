@@ -29,7 +29,7 @@ magpie 的答案是一个常驻菜单栏（现在也有 Windows、Linux、Docker
 - 配额用完自动续命。一个提供商的下一个账号顶上，路由组再切到别的模型或提供商，agent 根本看不到报错。
 - 隐私脱敏。开关打开后，prompt 里的 key、密码、邮箱在你本机被替换成占位符，请求出门前就脱敏，回复回来再原样放回，流式文本和工具调用参数都处理。同一个值永远映射到同一个占位符，所以对话、prompt 缓存、思考签名都不会失效。
 
-![图：阿鼠在黑板前讲解 magpie 网关架构：各家 agent 的请求经本地网关 127.0.0.1:3425 流向各家模型与订阅](https://img.arkblob.ccwu.cc/articles/magpie/chapters/02-gateway/ch02-gateway.jpg)
+![图：阿鼠在黑板前讲解 magpie 网关架构：各家 agent 的请求经本地网关 127.0.0.1:3425 流向各家模型与订阅](https://img.arkblob.ccwu.cc/articles/magpie/chapters/02-gateway/gateway-blackboard-v2.jpg)
 
 架构上没有黑科技：一个跑在 `127.0.0.1:3425` 的本地网关，同时说 OpenAI Chat、OpenAI Responses、Anthropic Messages 和 Gemini 四种协议，并在它们之间互译——流式、工具调用、推理内容都翻。所有 agent 的请求都进这个网关，网关再根据路由规则分发到你配置的 key、订阅账号或本地模型上。路由组可以按 smart（优先用最快重置的配额）、order（主备）、rotate（轮换）、usage（最省）、pace（按小时配速）几种策略展开，组里还能嵌套组。意图路由再加一层：一个小模型先读每一轮新请求，测试代码送去强模型，快问快答送去便宜模型。
 
@@ -55,7 +55,7 @@ magpie 的答案是一个常驻菜单栏（现在也有 Windows、Linux、Docker
 
 第三层是规则晋升。一条教训如果在三个不同的日子里被复审看到，就升级进 code-standards.md，成为硬规则。教训不是越攒越多的流水账，而是会沉淀、会晋级、会被下次评审执行的制度。
 
-![图：阿鼠讲教训的升级路径——同一条教训被连续三天看到，就从 LESSONS.md 升为 code-standards.md 硬规则](https://img.arkblob.ccwu.cc/articles/magpie/chapters/04-lessons/ch04-lessons.jpg)
+![图：阿鼠讲教训的升级路径——同一条教训被连续三天看到，就从 LESSONS.md 升为 code-standards.md 硬规则](https://img.arkblob.ccwu.cc/articles/magpie/chapters/04-lessons/lessons-path-v2.jpg)
 
 ## 教训文件里到底长什么样
 
