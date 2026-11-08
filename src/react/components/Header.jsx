@@ -23,6 +23,7 @@ export default function Header({
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [randomTags, setRandomTags] = useState([]);
   const wrapperRef = useRef(null);
+  const searchInputRef = useRef(null);
 
   const suggestions = searchQuery.trim()
     ? allTags.filter((t) =>
@@ -57,6 +58,7 @@ export default function Header({
             <path d="m21 21-4.35-4.35" />
           </svg>
           <input
+            ref={searchInputRef}
             type="text"
             placeholder="搜索标题、摘要、作者或标签…"
             value={searchQuery}
@@ -69,6 +71,22 @@ export default function Header({
               setShowSuggestions(true);
             }}
           />
+          {searchQuery && (
+            <button
+              type="button"
+              className="searchClear"
+              aria-label="清除搜索内容"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => {
+                onSearch('');
+                searchInputRef.current?.focus();
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            </button>
+          )}
           {showSuggestions && suggestions.length > 0 && (
             <div className="tagSuggestions">
               {suggestions.map((tag) => (
