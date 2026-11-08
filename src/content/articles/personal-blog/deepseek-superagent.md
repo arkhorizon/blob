@@ -8,6 +8,7 @@ tags:
   - AI
   - Agent
   - 架构设计
+  - Super-agent
 cover: https://img.arkblob.ccwu.cc/articles/deepseek-superagent/cover-v2.jpg
 draft: false
 ---

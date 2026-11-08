@@ -7,6 +7,7 @@ tags:
   - Agent
   - 架构设计
   - DeepSeek
+  - DeepSeek Harness
 cover: https://img.arkblob.ccwu.cc/articles/deepseek-harness-design/cover.jpg
 draft: false
 ---

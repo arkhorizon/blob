@@ -8,6 +8,7 @@ tags:
   - 开源
   - Agent
   - 工程实践
+  - Magpie
 cover: https://img.arkblob.ccwu.cc/articles/magpie/cover.jpg
 draft: false
 ---

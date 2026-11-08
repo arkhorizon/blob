@@ -8,6 +8,7 @@ tags:
   - AI
   - Agent
   - 源码拆解
+  - Pi
 cover: https://img.arkblob.ccwu.cc/articles/pi-agent-nb/cover.jpg
 draft: false
 ---
