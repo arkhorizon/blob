@@ -312,6 +312,80 @@ body::-webkit-scrollbar-thumb {
   height: 15px;
   pointer-events: none;
 }
+.searchFilterTrigger {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 28px;
+  height: 28px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: none;
+  color: var(--tx4);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.searchFilterTrigger svg {
+  width: 15px;
+  height: 15px;
+}
+.searchFilterTrigger:hover,
+.searchFilterTrigger:focus-visible {
+  color: var(--tx2);
+  background: var(--bg-h);
+  outline: none;
+}
+.searchFilterTrigger.active {
+  color: var(--ac);
+}
+.searchFilterDot {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ac);
+}
+.timeOptions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  min-width: 116px;
+  background: var(--bg-card);
+  border: 1px solid var(--bd);
+  border-radius: 12px;
+  box-shadow: var(--sh-h);
+  padding: 6px;
+  z-index: 210;
+  animation: fadeIn 0.2s ease;
+}
+.timeOption {
+  width: 100%;
+  border: none;
+  background: none;
+  color: var(--tx);
+  font-family: var(--font);
+  font-size: 0.8125rem;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.timeOption:hover {
+  background: var(--bg-h);
+}
+.timeOption.active {
+  color: var(--ac);
+  background: var(--ac-bg);
+}
 .searchClear {
   position: absolute;
   top: 50%;

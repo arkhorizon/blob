@@ -9,7 +9,7 @@ import Sidebar from "./Sidebar";
 import SidebarOverlay from "./SidebarOverlay";
 import SiteFooter from "./SiteFooter";
 import { getViews, readCachedViews } from "../lib/api";
-import { matchesEssaySearch } from "../lib/search";
+import { matchesDateRange, matchesEssaySearch, TIME_RANGES } from "../lib/search";
 import { useIsMobile } from "../hooks/useMediaQuery";
 
 function getInitialTheme() {
@@ -34,13 +34,13 @@ function updateScrollEndState() {
   );
 }
 
-function saveNavigationState(activeCategory, activeTags, searchQuery) {
+function saveNavigationState(activeCategory, activeTags, searchQuery, timeRange) {
   const state = window.history.state;
   const { scrollX, scrollY } = window;
   window.history.replaceState(
     {
       ...state,
-      listState: { activeCategory, activeTags: [...activeTags], searchQuery },
+      listState: { activeCategory, activeTags: [...activeTags], searchQuery, timeRange },
       listScrollX: scrollX,
       listScrollY: scrollY
     },
@@ -70,6 +70,7 @@ export default function ListApp({ index: initialIndex }) {
   const [activeCategory, setActiveCategory] = useState(null);
   const [activeTags, setActiveTags] = useState(() => new Set());
   const [searchQuery, setSearchQuery] = useState("");
+  const [timeRange, setTimeRange] = useState("all");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [showBackTop, setShowBackTop] = useState(false);
@@ -83,6 +84,7 @@ export default function ListApp({ index: initialIndex }) {
     setActiveCategory(state.listState.activeCategory ?? null);
     setActiveTags(new Set(state.listState.activeTags ?? []));
     setSearchQuery(state.listState.searchQuery ?? "");
+    setTimeRange(state.listState.timeRange ?? "all");
     requestAnimationFrame(() => {
       const maxY = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
       window.scrollTo(state.listScrollX ?? 0, Math.min(state.listScrollY, maxY));
@@ -107,14 +109,14 @@ export default function ListApp({ index: initialIndex }) {
     if (!alreadyEntered) {
       window.sessionStorage.setItem("sy-list-entered", "1");
     }
-    const onBeforePreparation = () => saveNavigationState(activeCategory, activeTags, searchQuery);
+    const onBeforePreparation = () => saveNavigationState(activeCategory, activeTags, searchQuery, timeRange);
     document.addEventListener("astro:before-preparation", onBeforePreparation);
     window.addEventListener("scrollend", updateScrollEndState, { passive: true });
     return () => {
       document.removeEventListener("astro:before-preparation", onBeforePreparation);
       window.removeEventListener("scrollend", updateScrollEndState);
     };
-  }, [activeCategory, activeTags, searchQuery]);
+  }, [activeCategory, activeTags, searchQuery, timeRange]);
 
   useEffect(() => {
     let cancelled = false;
@@ -190,6 +192,7 @@ export default function ListApp({ index: initialIndex }) {
     setActiveCategory(null);
     setActiveTags(new Set());
     setSearchQuery("");
+    setTimeRange("all");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
@@ -232,6 +235,7 @@ export default function ListApp({ index: initialIndex }) {
       setActiveCategory((current) => (current === category ? null : category));
       setActiveTags(new Set());
       setSearchQuery("");
+      setTimeRange("all");
       if (isMobile) closeSidebarMobile();
     },
     [closeSidebarMobile, isMobile]
@@ -247,6 +251,7 @@ export default function ListApp({ index: initialIndex }) {
       });
       setActiveCategory(null);
       setSearchQuery("");
+      setTimeRange("all");
       if (isMobile) closeSidebarMobile();
     },
     [closeSidebarMobile, isMobile]
@@ -254,6 +259,7 @@ export default function ListApp({ index: initialIndex }) {
 
   const handleSelectTag = useCallback((tag) => {
     setSearchQuery("");
+    setTimeRange("all");
     setActiveCategory(null);
     setActiveTags(new Set([tag]));
   }, []);
@@ -268,17 +274,20 @@ export default function ListApp({ index: initialIndex }) {
     if (query) {
       list = list.filter((essay) => matchesEssaySearch(essay, query));
     }
+    list = list.filter((essay) => matchesDateRange(essay, timeRange));
     return list;
-  }, [activeCategory, activeTags, essays, essayOrder, searchQuery]);
+  }, [activeCategory, activeTags, essays, essayOrder, searchQuery, timeRange]);
 
   const headerInfo = useMemo(() => {
     const query = searchQuery.trim();
-    const hasFilter = Boolean(activeCategory || activeTags.size || query);
+    const activeTimeRange = TIME_RANGES.find((range) => range.value === timeRange)?.label;
+    const hasFilter = Boolean(activeCategory || activeTags.size || query || activeTimeRange);
     if (query) {
+      const suffix = activeTimeRange ? ` · ${activeTimeRange}` : "";
       return {
         title: isMobile
-          ? `搜索「${query}」`
-          : `搜索「${query}」 · 共检索到 ${filteredEssays.length} 篇文章`,
+          ? `搜索「${query}」${suffix}`
+          : `搜索「${query}」${suffix || ""} · 共检索到 ${filteredEssays.length} 篇文章`,
         subtitle: "",
         showClear: hasFilter
       };
@@ -291,6 +300,13 @@ export default function ListApp({ index: initialIndex }) {
       };
     }
     if (activeCategory) return { title: activeCategory, subtitle: "", showClear: hasFilter };
+    if (activeTimeRange) {
+      return {
+        title: isMobile ? activeTimeRange : `${activeTimeRange} · 共检索到 ${filteredEssays.length} 篇文章`,
+        subtitle: "",
+        showClear: true
+      };
+    }
     return {
       title: "全部文章",
       subtitle: `共 ${essayOrder.length} 篇 · 最近更新于 ${latestDate}`,
@@ -303,7 +319,8 @@ export default function ListApp({ index: initialIndex }) {
     filteredEssays.length,
     isMobile,
     latestDate,
-    searchQuery
+    searchQuery,
+    timeRange
   ]);
 
   return (
@@ -315,6 +332,8 @@ export default function ListApp({ index: initialIndex }) {
         searchQuery={searchQuery}
         onSearch={handleSearch}
         onSelectTag={handleSelectTag}
+        timeRange={timeRange}
+        onTimeRangeChange={setTimeRange}
         onReset={handleHome}
         onSwitchTheme={setTheme}
         allTags={allTags}

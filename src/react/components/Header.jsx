@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import ThemePanel from './ThemePanel';
+import { TIME_RANGES } from '../lib/search';
 
 function pickRandom(arr, n) {
   const copy = [...arr];
@@ -16,11 +17,14 @@ export default function Header({
   searchQuery,
   onSearch,
   onSelectTag,
+  timeRange = 'all',
+  onTimeRangeChange,
   onReset,
   onSwitchTheme,
   allTags,
 }) {
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showTimeOptions, setShowTimeOptions] = useState(false);
   const [randomTags, setRandomTags] = useState([]);
   const wrapperRef = useRef(null);
   const searchInputRef = useRef(null);
@@ -38,6 +42,7 @@ export default function Header({
     const handleClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setShowSuggestions(false);
+        setShowTimeOptions(false);
       }
     };
     document.addEventListener('mousedown', handleClick);
@@ -53,10 +58,53 @@ export default function Header({
       </div>
       <div className="headerCenter">
         <div className="searchBox" ref={wrapperRef}>
-          <svg className="searchIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.35-4.35" />
-          </svg>
+          <button
+            type="button"
+            className={`searchFilterTrigger${timeRange !== 'all' ? ' active' : ''}`}
+            aria-expanded={showTimeOptions}
+            aria-controls="searchTimeOptions"
+            aria-label="高级搜索"
+            title="高级搜索"
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => setShowTimeOptions((current) => !current)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            {timeRange !== 'all' && <span className="searchFilterDot" />}
+          </button>
+          {showTimeOptions && (
+            <div className="timeOptions" id="searchTimeOptions" role="menu">
+              <button
+                type="button"
+                role="menuitemradio"
+                aria-checked={timeRange === 'all'}
+                className={`timeOption${timeRange === 'all' ? ' active' : ''}`}
+                onClick={() => {
+                  onTimeRangeChange?.('all');
+                  setShowTimeOptions(false);
+                }}
+              >
+                全部时间
+              </button>
+              {TIME_RANGES.map(({ value, label }) => (
+                <button
+                  key={value}
+                  type="button"
+                  role="menuitemradio"
+                  aria-checked={timeRange === value}
+                  className={`timeOption${timeRange === value ? ' active' : ''}`}
+                  onClick={() => {
+                    onTimeRangeChange?.(value);
+                    setShowTimeOptions(false);
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+          )}
           <input
             ref={searchInputRef}
             type="text"

@@ -123,7 +123,11 @@ export default function CardGrid({ essays, onSelectEssay, onTagClick, highlightT
                 <HighlightText text={e.title} terms={highlightTerms} />
               </div>
               <div className="cardMeta">
-                {e.author && <span className="cardAuthor">{e.author}</span>}
+                {e.author && (
+                  <span className="cardAuthor">
+                    <HighlightText text={e.author} terms={highlightTerms} />
+                  </span>
+                )}
                 <span className="cardDate">{e.date}</span>
                 <span className="cardCat">{e.category}</span>
                 <span className="cardTime">{e.time}</span>
