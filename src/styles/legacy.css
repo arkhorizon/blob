@@ -314,6 +314,8 @@ body::-webkit-scrollbar-thumb {
 }
 .searchClear {
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   right: 6px;
   width: 24px;
   height: 24px;
@@ -2814,6 +2816,8 @@ mark.searchHL {
     left: 14px;
   }
   .searchClear {
+    top: 50%;
+    transform: translateY(-50%);
     right: 8px;
     width: 26px;
     height: 26px;
