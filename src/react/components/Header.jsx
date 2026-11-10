@@ -58,7 +58,7 @@ export default function Header({
         </div>
       </div>
       <div className="headerCenter">
-        <div className={`searchBox${selectedTimeRange ? ' hasTimeRange' : ''}`} ref={wrapperRef}>
+        <div className="searchBox" ref={wrapperRef}>
           <button
             type="button"
             className={`searchFilterTrigger${timeRange !== 'all' ? ' active' : ''}`}

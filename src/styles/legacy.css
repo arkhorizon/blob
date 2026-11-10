@@ -290,7 +290,7 @@ body::-webkit-scrollbar-thumb {
   color: var(--tx);
   font-family: var(--font-s);
   font-size: 0.8125rem;
-  padding: 0 32px 0 36px;
+  padding: 0 32px 0 48px;
   outline: none;
   transition: all 0.25s;
 }
@@ -301,9 +301,6 @@ body::-webkit-scrollbar-thumb {
   border-color: var(--ac);
   box-shadow: 0 0 0 3px var(--ac-bg);
   background: var(--bg-card);
-}
-.searchBox.hasTimeRange input {
-  padding-left: 48px;
 }
 .searchBox .searchIcon {
   position: absolute;
@@ -763,6 +760,8 @@ body::-webkit-scrollbar-thumb {
 .main {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
   padding: 28px 32px 60px;
   transition: padding var(--t);
 }
@@ -770,7 +769,9 @@ body::-webkit-scrollbar-thumb {
 /* ─── LIST ─── */
 .listView {
   max-width: var(--list-w);
+  flex: 1 0 auto;
   margin: 0 auto;
+  margin-bottom: 48px;
 }
 .listHdr {
   margin-bottom: 22px;
@@ -1206,7 +1207,7 @@ mark.searchHL {
 /* ─── SITE FOOTER ─── */
 .siteFooter {
   max-width: var(--list-w);
-  margin: 48px auto 0;
+  margin: auto auto 0;
   padding-top: 26px;
   border-top: 1px solid var(--bd2);
   display: flex;
@@ -2894,7 +2895,7 @@ mark.searchHL {
   .searchBox input {
     height: 42px;
     font-size: 0.9rem;
-    padding: 0 36px 0 42px;
+    padding: 0 36px 0 48px;
   }
   .searchBox .searchIcon {
     width: 17px;
