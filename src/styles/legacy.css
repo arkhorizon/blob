@@ -302,6 +302,9 @@ body::-webkit-scrollbar-thumb {
   box-shadow: 0 0 0 3px var(--ac-bg);
   background: var(--bg-card);
 }
+.searchBox.hasTimeRange input {
+  padding-left: 48px;
+}
 .searchBox .searchIcon {
   position: absolute;
   left: 11px;
@@ -343,14 +346,23 @@ body::-webkit-scrollbar-thumb {
 .searchFilterTrigger.active {
   color: var(--ac);
 }
-.searchFilterDot {
+.searchFilterBadge {
   position: absolute;
-  right: 4px;
-  bottom: 4px;
-  width: 5px;
-  height: 5px;
+  right: -5px;
+  bottom: -3px;
+  width: 13px;
+  height: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
   background: var(--ac);
+  color: #fff;
+  font-family: var(--font-s);
+  font-size: 0.5rem;
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
 }
 .timeOptions {
   position: absolute;

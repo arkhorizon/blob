@@ -28,6 +28,7 @@ export default function Header({
   const [randomTags, setRandomTags] = useState([]);
   const wrapperRef = useRef(null);
   const searchInputRef = useRef(null);
+  const selectedTimeRange = TIME_RANGES.find((range) => range.value === timeRange);
 
   const suggestions = searchQuery.trim()
     ? allTags.filter((t) =>
@@ -57,22 +58,27 @@ export default function Header({
         </div>
       </div>
       <div className="headerCenter">
-        <div className="searchBox" ref={wrapperRef}>
+        <div className={`searchBox${selectedTimeRange ? ' hasTimeRange' : ''}`} ref={wrapperRef}>
           <button
             type="button"
             className={`searchFilterTrigger${timeRange !== 'all' ? ' active' : ''}`}
             aria-expanded={showTimeOptions}
             aria-controls="searchTimeOptions"
-            aria-label="高级搜索"
-            title="高级搜索"
+            aria-label={selectedTimeRange ? `高级搜索：${selectedTimeRange.label}` : '高级搜索'}
+            title={selectedTimeRange ? `高级搜索：${selectedTimeRange.label}` : '高级搜索'}
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => setShowTimeOptions((current) => !current)}
+            onClick={() => {
+              setShowTimeOptions((current) => !current);
+              setShowSuggestions(false);
+            }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
-            {timeRange !== 'all' && <span className="searchFilterDot" />}
+            {selectedTimeRange && (
+              <span className="searchFilterBadge">{selectedTimeRange.value.charAt(0)}</span>
+            )}
           </button>
           {showTimeOptions && (
             <div className="timeOptions" id="searchTimeOptions" role="menu">
@@ -113,10 +119,12 @@ export default function Header({
             onChange={(e) => {
               onSearch(e.target.value);
               setShowSuggestions(true);
+              setShowTimeOptions(false);
             }}
             onFocus={() => {
               setRandomTags(pickRandom(allTags, 5));
               setShowSuggestions(true);
+              setShowTimeOptions(false);
             }}
           />
           {searchQuery && (
@@ -145,6 +153,7 @@ export default function Header({
                     e.preventDefault(); // prevent blur
                     onSelectTag(tag);
                     setShowSuggestions(false);
+                    setShowTimeOptions(false);
                   }}
                 >
                   <span className="tagSugIcon">#</span>
