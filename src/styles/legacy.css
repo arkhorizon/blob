@@ -2145,7 +2145,7 @@ mark.searchHL {
   background: transparent;
   border-radius: 0;
 }
-.article .codeBlock code {
+.article .codeBlock pre code {
   padding: 0;
   background: transparent;
   color: inherit;
@@ -2514,6 +2514,7 @@ mark.searchHL {
   top: 28px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
+  scrollbar-gutter: stable;
   opacity: 0;
   animation: fadeIn 0.5s 0.3s ease forwards;
 }
@@ -2570,7 +2571,8 @@ mark.searchHL {
   --toc-progress-opacity: 1;
 }
 .tocLnk {
-  display: block;
+  display: grid;
+  grid-template-columns: minmax(0, max-content);
   font-family: var(--font-s);
   font-size: 0.82rem;
   color: var(--tx3);
@@ -2581,6 +2583,17 @@ mark.searchHL {
   text-decoration: none;
   line-height: 1.55;
   overflow-wrap: anywhere;
+}
+.tocLnk::before {
+  content: attr(data-text);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  visibility: hidden;
+  pointer-events: none;
+}
+.tocLabel {
+  grid-area: 1 / 1;
+  min-width: 0;
 }
 .tocLnk:hover {
   color: var(--tx);

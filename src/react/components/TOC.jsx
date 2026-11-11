@@ -141,6 +141,7 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
             <a
               key={heading.id}
               data-heading-id={heading.id}
+              data-text={heading.text}
               className={`tocLnk${heading.level === 'H3' ? ' sub' : ''}${isActive ? ' active' : ''}${isHovered ? ' hovered' : ''}${isPassed || isPreviewPassed ? ' passed' : ''}`}
               aria-current={isActive ? 'location' : undefined}
               onMouseEnter={() => setHoveredId(heading.id)}
@@ -149,7 +150,7 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
                 handleClick(heading.id);
               }}
             >
-              {heading.text}
+              <span className="tocLabel">{heading.text}</span>
             </a>
           );
         })}
