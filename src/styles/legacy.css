@@ -2514,9 +2514,13 @@ mark.searchHL {
   top: 28px;
   max-height: calc(100vh - 80px);
   overflow-y: auto;
-  scrollbar-gutter: stable;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   opacity: 0;
   animation: fadeIn 0.5s 0.3s ease forwards;
+}
+.reading.vis .toc::-webkit-scrollbar {
+  display: none;
 }
 .tocHeading {
   display: flex;

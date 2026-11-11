@@ -84,11 +84,15 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
         return;
       }
 
-      const firstItem = nav.querySelector('.tocLnk');
-      const top = firstItem.offsetTop;
+      const navRect = nav.getBoundingClientRect();
+      const firstText = nav.querySelector('.tocLnk .tocLabel') || nav.querySelector('.tocLnk');
+      const activeText = activeItem.querySelector('.tocLabel') || activeItem;
+      const firstTextRect = firstText.getBoundingClientRect();
+      const activeTextRect = activeText.getBoundingClientRect();
+      const top = firstTextRect.top - navRect.top;
       setProgress({
         top,
-        height: Math.max(0, activeItem.offsetTop + activeItem.offsetHeight - top),
+        height: Math.max(0, activeTextRect.bottom - navRect.top - top),
       });
     };
 
