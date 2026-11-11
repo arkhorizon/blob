@@ -168,25 +168,26 @@ export interface SessionEntryBase {
 
 ### 2.2 一棵真实的树
 
-这是那段会话跑完之后的完整结构，缩进表示父子关系：
+这是那段会话跑完之后的完整结构。实线是 `parentId` 父子关系，虚线是 `branch_summary` 的 `fromId` 指针：
 
-```text
-message/system  [2e183790]  完整 prompt 分区 + 三个工具声明
-└─ message/user [988fe39b]  "把 checkout 的价格计算抽成独立模块，再补一组单测"
-   └─ message/assistant [2538b3f9]  文本 + toolCall(read, src/checkout.ts)
-      └─ message/toolResult [f29c8ed5]  read 的输出
-         └─ custom [b2613260]  pi-memory.index  ← 扩展私有状态，不进上下文
-            └─ custom_message [127d8f23]  pi-memory.recall  ← 扩展注入，进上下文
-               └─ context_edit [e5421a5b]  targetId=f29c8ed5, replacement=null
-                  └─ compaction [5f0738b2]  firstKeptEntryId=127d8f23, 51230 tokens
-                     └─ message/system [98c49627]  补丁：加 skills 段，移除 edit 工具
-      └─ branch_summary [d202dc28]  fromId=98c49627，旧路径摘要
-         └─ message/user [02f8c129]  "换个做法：先在 pricing.ts 建模块"
+```mermaid
+flowchart TD
+    S["message/system<br/>2e183790 · 完整 prompt 分区"] --> U["message/user<br/>988fe39b · 抽模块 + 补单测"]
+    U --> A["message/assistant<br/>2538b3f9 · toolCall: read"]
+    A --> T["message/toolResult<br/>f29c8ed5 · read 输出"]
+    T --> C1["custom<br/>b2613260 · pi-memory.index<br/>不进上下文"]
+    C1 --> C2["custom_message<br/>127d8f23 · pi-memory.recall<br/>进上下文"]
+    C2 --> E["context_edit<br/>e5421a5b · 剔除 f29c8ed5"]
+    E --> P["compaction<br/>5f0738b2 · 51230 tokens"]
+    P --> S2["message/system<br/>98c49627 · 补丁：加 skills 移除 edit<br/>旧路径末端"]
+    A --> B["branch_summary<br/>d202dc28 · 摘要旧路径"]
+    B --> U2["message/user<br/>02f8c129 · 新分支起点"]
+    B -.-> S2
 ```
 
 从 `assistant` 节点分出两条路：右边沿原路继续（扩展注入、编辑、压缩、工具补丁），先被放弃；左边挂着 `branch_summary` 开新分支。**两条路都在文件里，一字节没删。**
 
-把文件读回 `SessionManager`，`getTree()` 输出与上面完全一致；`buildSessionContext()` 只取活跃分支那一列（`system → user → assistant → branchSummary → user`）。`toolResult`、`compaction`、`custom` 都不在模型眼前——它们在树上。
+活跃分支是从 `02f8c129` 走到根的那条，投影出来就是 `system → user → assistant → branchSummary → user`。`toolResult`、`compaction`、`custom` 都不在模型眼前——它们在树上。
 
 ### 2.3 分支：一次 `branch()` 做了什么
 
