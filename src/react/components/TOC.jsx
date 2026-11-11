@@ -3,6 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRef }) {
   const [headings, setHeadings] = useState([]);
   const [activeId, setActiveId] = useState(null);
+  const [hoveredId, setHoveredId] = useState(null);
   const navRef = useRef(null);
   const [progress, setProgress] = useState({ top: 0, height: 0 });
 
@@ -73,8 +74,9 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
     if (!nav) return;
 
     const measureProgress = () => {
-      const activeItem = activeId
-        ? nav.querySelector(`[data-heading-id="${CSS.escape(activeId)}"]`)
+      const previewId = hoveredId || activeId;
+      const activeItem = previewId
+        ? nav.querySelector(`[data-heading-id="${CSS.escape(previewId)}"]`)
         : null;
 
       if (!activeItem) {
@@ -95,7 +97,7 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
     navObserver.observe(nav);
 
     return () => navObserver.disconnect();
-  }, [activeId, headings]);
+  }, [activeId, headings, hoveredId]);
 
   const handleClick = useCallback((id) => {
     const el = document.getElementById(id);
@@ -113,6 +115,7 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
   if (!headings.length) return null;
 
   const activeIndex = headings.findIndex((heading) => heading.id === activeId);
+  const hoveredIndex = headings.findIndex((heading) => heading.id === hoveredId);
 
   return (
     <div className="toc">
@@ -126,17 +129,21 @@ export default function TOC({ contentRef, essayId, chapterIdx, scrollContainerRe
         ref={navRef}
         className="tocNav"
         aria-label="本页目录"
+        onMouseLeave={() => setHoveredId(null)}
         style={{ '--toc-progress-top': `${progress.top}px`, '--toc-progress-height': `${progress.height}px` }}
       >
         {headings.map((heading, index) => {
           const isActive = heading.id === activeId;
+          const isHovered = heading.id === hoveredId;
           const isPassed = activeIndex >= 0 && index < activeIndex;
+          const isPreviewPassed = hoveredIndex >= 0 && index < hoveredIndex;
           return (
             <a
               key={heading.id}
               data-heading-id={heading.id}
-              className={`tocLnk${heading.level === 'H3' ? ' sub' : ''}${isActive ? ' active' : ''}${isPassed ? ' passed' : ''}`}
+              className={`tocLnk${heading.level === 'H3' ? ' sub' : ''}${isActive ? ' active' : ''}${isHovered ? ' hovered' : ''}${isPassed || isPreviewPassed ? ' passed' : ''}`}
               aria-current={isActive ? 'location' : undefined}
+              onMouseEnter={() => setHoveredId(heading.id)}
               onClick={(e) => {
                 e.preventDefault();
                 handleClick(heading.id);

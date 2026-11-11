@@ -387,12 +387,6 @@ export default function ReadingView({
     <div className="reading vis" ref={containerRef}>
       <ProgressBar progress={readingProgress} />
       <BackToTop visible={showBackTop} scrollContainer={containerRef} />
-      <TOC
-        contentRef={articleRef}
-        essayId={essayId}
-        chapterIdx={chapterIdx}
-        scrollContainerRef={containerRef}
-      />
       <div className="readingWrap">
         <div className="readingInner">
           <div className={`rdTop${topScrolled ? " scrolled" : ""}`} ref={topRef}>
@@ -539,6 +533,12 @@ export default function ReadingView({
           <SiteFooter />
         </div>
       </div>
+      <TOC
+        contentRef={articleRef}
+        essayId={essayId}
+        chapterIdx={chapterIdx}
+        scrollContainerRef={containerRef}
+      />
       {lightbox.src && (
         <ImageLightbox
           src={lightbox.src}

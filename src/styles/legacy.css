@@ -1385,7 +1385,7 @@ mark.searchHL {
   border-radius: 3px;
 }
 .reading.vis:has(.toc) {
-  padding-right: var(--toc-w);
+  padding-left: var(--toc-w);
 }
 .readingWrap {
   flex: 0 1 var(--max-w);
@@ -2504,7 +2504,7 @@ mark.searchHL {
 .toc {
   width: var(--toc-w);
   min-width: var(--toc-w);
-  padding-right: 28px;
+  padding-left: 28px;
   position: sticky;
   top: calc(var(--hdr-h) + 28px);
   height: fit-content;
@@ -2566,6 +2566,9 @@ mark.searchHL {
 .tocNav:has(.tocLnk.active) {
   --toc-progress-opacity: 1;
 }
+.tocNav:has(.tocLnk.hovered) {
+  --toc-progress-opacity: 1;
+}
 .tocLnk {
   display: block;
   font-family: var(--font-s);
@@ -2580,9 +2583,7 @@ mark.searchHL {
   overflow-wrap: anywhere;
 }
 .tocLnk:hover {
-  color: var(--ac);
-  border-left-color: var(--ac);
-  background: var(--bg-toc);
+  color: var(--tx);
 }
 .tocLnk.sub {
   padding-left: 26px;
@@ -2593,6 +2594,9 @@ mark.searchHL {
 }
 .tocLnk.active {
   color: var(--tx);
+  font-weight: 600;
+}
+.tocLnk.hovered {
   font-weight: 600;
 }
 
@@ -2717,7 +2721,7 @@ mark.searchHL {
   }
   .reading.vis,
   .reading.vis:has(.toc) {
-    padding-right: 0;
+    padding-left: 0;
   }
 }
 
@@ -2794,7 +2798,7 @@ mark.searchHL {
   .toc {
     width: var(--toc-w);
     min-width: var(--toc-w);
-    padding-right: 40px;
+    padding-left: 40px;
   }
   .tocHeading {
     font-size: 0.78rem;
@@ -2903,7 +2907,7 @@ mark.searchHL {
   .toc {
     width: var(--toc-w);
     min-width: var(--toc-w);
-    padding-right: 48px;
+    padding-left: 48px;
   }
   .tocHeading {
     font-size: 0.82rem;
