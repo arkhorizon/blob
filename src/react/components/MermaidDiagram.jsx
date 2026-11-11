@@ -109,8 +109,40 @@ export default function MermaidDiagram({ source, index, theme }) {
         mermaid.initialize({
           startOnLoad: false,
           securityLevel: "strict",
-          theme: theme === "night" ? "dark" : "neutral",
-          fontFamily: "'Noto Sans SC', system-ui, sans-serif"
+          theme: theme === "night" ? "dark" : theme === "magazine" ? "base" : "neutral",
+          fontFamily: "'Noto Sans SC', system-ui, sans-serif",
+          ...(theme === "magazine" && {
+            themeVariables: {
+              primaryColor: "#eef2ff",
+              primaryBorderColor: "#2d3a8c",
+              primaryTextColor: "#1f2937",
+              secondaryColor: "#e8edf8",
+              secondaryBorderColor: "#64748b",
+              secondaryTextColor: "#334155",
+              tertiaryColor: "#f8fafc",
+              mainBkg: "#eef2ff",
+              nodeBorder: "#2d3a8c",
+              lineColor: "#94a3b8",
+              textColor: "#1e293b",
+              edgeLabelBackground: "#ffffff",
+              clusterBkg: "#f8fafc",
+              clusterBorder: "#cbd5e1",
+              actorBkg: "#eef2ff",
+              actorBorder: "#2d3a8c",
+              actorTextColor: "#1f2937",
+              actorLineColor: "#cbd5e1",
+              signalColor: "#475569",
+              signalTextColor: "#334155",
+              labelBoxBkgColor: "#eef2ff",
+              labelBoxBorderColor: "#2d3a8c",
+              labelTextColor: "#1f2937",
+              loopTextColor: "#334155",
+              noteBkgColor: "#fff7ed",
+              noteBorderColor: "#f59e0b",
+              noteTextColor: "#7c2d12",
+              sequenceNumberColor: "#ffffff"
+            }
+          })
         });
 
         const renderId = `${diagramId}-${Date.now()}`;
