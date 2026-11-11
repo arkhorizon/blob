@@ -101,6 +101,7 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
 }
 /* Router history restoration must not inherit the site-wide smooth scrolling. */
@@ -768,6 +769,7 @@ body::-webkit-scrollbar-thumb {
 
 /* ─── LIST ─── */
 .listView {
+  width: 100%;
   max-width: var(--list-w);
   flex: 1 0 auto;
   margin: 0 auto;
@@ -1214,6 +1216,9 @@ mark.searchHL {
   flex-direction: column;
   gap: 18px;
   font-family: var(--font-s);
+}
+.main > .siteFooter {
+  width: 100%;
 }
 .siteFooterMain {
   display: flex;
