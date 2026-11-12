@@ -8,7 +8,7 @@ tags:
   - AI
   - 开源
   - 框架对比
-cover: https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/cover-v3.jpg
+cover: https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/cover-v4.jpg
 draft: false
 ---
 
@@ -18,7 +18,7 @@ draft: false
 
 这篇是我基于两边仓库和 npm 的一手调研（数据截至 2026 年 11 月 12 日），把这三件事摊开来讲。
 
-![图：小老鼠讲师在黑板前对比 Pi 的大集市与 dsh 的整齐货架](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/cover-v3.jpg)
+![图：小老鼠讲师在黑板前对比 Pi 的大集市与 dsh 的整齐货架](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/cover-v4.jpg)
 
 ## 一、两家生态现在长什么样
 
@@ -39,7 +39,7 @@ Pi 是从个人项目一步步长大的，它的生态像一个大集市：任�
 
 dsh 的生态像一家店自建的全套货架：模型接入、工具、压缩、子 agent、会话存储……npm 上能直接看到的官方包约 55 个，仓库内部则拆成数百个细粒度 workspace package，统一命名为 `@deepseek-ai/dsh-xxx` 并在同一个 monorepo 里开发。外界不是只能给官方仓库提 PR：GitHub 有 `dsh-plugin` topic，社区也出现了 source-verified 精选目录和 experimental plugin index；只是这些入口还很新，不能和 Pi 的 npm 包市场比成熟度。
 
-![图：小老鼠讲师敲黑板对比两边的贡献者和包数量](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/ecosystem-numbers-v3.jpg)
+![图：小老鼠讲师敲黑板对比两边的贡献者和包数量](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/ecosystem-numbers-v4.jpg)
 
 还有一个挺有意思的现象：npm 上有一批 dsh 相关的社区包，干的事是「帮 dsh 接上 pi 生态的现成货」——比如把 pi 的模型库包装给 dsh 用、把 pi 的终端界面移植过来。这说明 dsh 原生生态虽然声势大，但内容还年轻，社区先去 pi 那里借存货过渡。连 dsh 官方自己都有一个 `dsh-llm-pi-ai` 包，就是封装 pi 的模型库——pi 攒下的广度，连竞争对手都在用。
 
@@ -92,7 +92,7 @@ dsh 的思路完全不同：它不追求「随便什么人都能快速塞一个�
 
 但门槛在另一个地方。它的官方文档里有一篇《添加包清单》，讲怎么往仓库里加一个新包——几千字的逐文件清单：package.json 有一堆不变式要满足（有专门脚本强制校验）、包命名要按「角色表」对号入座（Controller、Store、Registry、Resolver……每个词的适用条件都写了两列表格）、LLM 适配器要遵守九条协议义务（比如 usage 必须在 finish 之前发、不支持的能力要抛特定错误而不是静默忽略）。规矩清楚是清楚，但你得先读懂这一整套结构体系才能下手。
 
-![图：一边是即插即用的插槽，一边是规整齿轮接口但围着施工围栏](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/extension-paths-v3.jpg)
+![图：一边是即插即用的插槽，一边是规整齿轮接口但围着施工围栏](https://img.arkblob.ccwu.cc/articles/pi-vs-dsh-ecosystem/extension-paths-v4.jpg)
 
 更要命的是，这些接口本身还在动。dsh 至今没有 1.0，只有 0.2 的预览版，接口随时会调整。这不是猜测——官方那个封装 pi 模型库的包 `dsh-llm-pi-ai`，从 2026 年 8 月 10 日到 11 月 12 日，95 天里发了 **44 个版本**，从 0.0.1-rc 一路追到 0.2.2-rc。连官方自己的包都在追着接口跑、每隔几天重发一次，社区包要付的返工成本可想而知。
 
