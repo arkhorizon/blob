@@ -193,6 +193,38 @@ export default function ReadingView({
     setDiagramSources(diagrams.map((diagram) => decodeURIComponent(diagram.dataset.mermaid || "")));
   }, [chapterIdx, displayContent, essayId]);
 
+  useLayoutEffect(() => {
+    const element = articleRef.current;
+    if (!element) return;
+
+    const updateTableScrollModes = () => {
+      element.querySelectorAll(".articleTableWrap").forEach((tableWrap) => {
+        const table = tableWrap.querySelector("table");
+        const isOverflowing = Boolean(
+          table &&
+            (table.offsetWidth > tableWrap.clientWidth + 1 ||
+              table.scrollWidth > tableWrap.clientWidth + 1)
+        );
+        tableWrap.classList.toggle("table-scroll-x", isOverflowing);
+      });
+    };
+
+    updateTableScrollModes();
+
+    const resizeObserver = new ResizeObserver(updateTableScrollModes);
+    element.querySelectorAll(".articleTableWrap").forEach((tableWrap) => {
+      resizeObserver.observe(tableWrap);
+      resizeObserver.observe(tableWrap.querySelector("table"));
+    });
+    window.addEventListener("resize", updateTableScrollModes);
+    document.fonts?.ready.then(updateTableScrollModes);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateTableScrollModes);
+    };
+  }, [chapterIdx, displayContent, essayId, fontLevel]);
+
   const diagramNodes = articleRef.current?.querySelectorAll(".mermaidFig");
 
   useLayoutEffect(() => {

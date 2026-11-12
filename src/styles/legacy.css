@@ -1649,12 +1649,12 @@ mark.searchHL {
 
 .rdTitle {
   font-family: var(--font);
-  font-size: 1.8rem;
-  font-weight: 700;
+  font-size: clamp(1.9rem, 1.05rem + 2.3vw, 2.4rem);
+  font-weight: 800;
   line-height: 1.35;
   color: var(--tx);
   margin-bottom: 10px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.015em;
 }
 .rdMeta {
   display: flex;
@@ -1742,9 +1742,9 @@ mark.searchHL {
 .rdChapterTitle {
   font-family: var(--font);
   font-size: clamp(1.35rem, 3vw, 1.65rem);
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.3;
-  color: var(--tx);
+  color: color-mix(in srgb, var(--tx) 78%, var(--ac));
   margin-top: 6px;
 }
 
@@ -1926,13 +1926,14 @@ mark.searchHL {
 }
 .article h2 {
   font-family: var(--font);
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: var(--tx);
+  font-size: 1.62rem;
+  font-weight: 800;
+  color: var(--ac);
   margin: 2.2em 0 0.8em;
   line-height: 1.4;
   position: relative;
-  padding-left: 14px;
+  padding-left: 16px;
+  letter-spacing: 0.01em;
 }
 .article h2::before {
   content: '';
@@ -1940,16 +1941,31 @@ mark.searchHL {
   left: 0;
   top: 4px;
   bottom: 4px;
-  width: 3px;
+  width: 4px;
   border-radius: 2px;
   background: var(--ac);
 }
 .article h3 {
   font-family: var(--font);
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--tx);
+  font-size: 1.28rem;
+  font-weight: 800;
+  color: color-mix(in srgb, var(--tx) 82%, var(--ac));
   margin: 1.8em 0 0.6em;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+}
+.article h4,
+.article h5,
+.article h6 {
+  font-weight: 800;
+  color: var(--tx);
+}
+.article h4 {
+  font-size: 1.13rem;
+}
+.article h5,
+.article h6 {
+  font-size: 1.05rem;
 }
 .article blockquote {
   margin: 1.8em 0;
@@ -2478,6 +2494,14 @@ mark.searchHL {
   font-weight: 650;
   white-space: nowrap;
 }
+.reading.vis .articleTableWrap:not(.table-scroll-x) {
+  overflow-x: clip;
+}
+.reading.vis .article thead th {
+  position: sticky;
+  top: calc(50px + env(safe-area-inset-top) * 1.2);
+  z-index: 10;
+}
 .article tbody tr:nth-child(even) {
   background: color-mix(in srgb, var(--bg-s) 55%, transparent);
 }
@@ -2828,16 +2852,16 @@ mark.searchHL {
     font-size: 0.8rem;
   }
   .rdTitle {
-    font-size: 2.2rem;
+    font-size: 2.3rem;
   }
   .article {
     font-size: 1.15rem;
   }
   .article h2 {
-    font-size: 1.6rem;
+    font-size: 1.78rem;
   }
   .article h3 {
-    font-size: 1.2rem;
+    font-size: 1.4rem;
   }
 }
 
@@ -2940,7 +2964,7 @@ mark.searchHL {
   }
   /* rdBack is a 34×34 icon button — no text padding needed */
   .rdTitle {
-    font-size: 2.5rem;
+    font-size: 2.6rem;
     letter-spacing: 0.03em;
   }
   .rdMeta {
@@ -2960,11 +2984,11 @@ mark.searchHL {
     line-height: 2;
   }
   .article h2 {
-    font-size: 1.75rem;
+    font-size: 1.95rem;
     margin: 2.5em 0 1em;
   }
   .article h3 {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
   }
   .article blockquote {
     padding: 18px 24px;
@@ -3168,7 +3192,7 @@ mark.searchHL {
 
   /* Reading */
   .rdTitle {
-    font-size: 1.4rem;
+    font-size: 1.78rem;
   }
   .rdChapterBar {
     align-items: flex-start;
@@ -3176,7 +3200,7 @@ mark.searchHL {
     padding: 16px;
   }
   .rdChapterTitle {
-    font-size: 1.25rem;
+    font-size: 1.42rem;
   }
   .rdChapterPills {
     width: 100%;
@@ -3193,10 +3217,10 @@ mark.searchHL {
     font-size: 0.86em;
   }
   .article h2 {
-    font-size: 1.25rem;
+    font-size: 1.48rem;
   }
   .article h3 {
-    font-size: 1.0625rem;
+    font-size: 1.22rem;
   }
 
   /* Reading top bar */
@@ -3455,7 +3479,7 @@ mark.searchHL {
     height: 140px;
   }
   .rdTitle {
-    font-size: 1.25rem;
+    font-size: 1.55rem;
   }
   .rdMeta {
     gap: 8px;
